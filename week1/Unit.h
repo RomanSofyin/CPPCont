@@ -36,7 +36,7 @@ struct Man : virtual Unit
 /*
  * Failed. Runtime error
  * terminate called after throwing an instance of 'std::logic_error'
- *  what():  Bear and pig are different animals
+ *  what():  Bear and pig are different animals						<--- !!!
  * Aborted (core dumped)
  */
 
