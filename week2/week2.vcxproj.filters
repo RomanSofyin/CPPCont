@@ -29,5 +29,8 @@
     <ClCompile Include="week2.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="draft.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
