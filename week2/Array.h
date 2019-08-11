@@ -37,8 +37,8 @@ struct Array
 	// *RIS: taken from CPPIntro week6
 	T const& operator[](size_t i) const { return *(data_ + i); }
 
-	// реализуйте перемещающий конструктор
-
+	// реализуйте перемещающий  конструктор
+	//
 	// реализуйте перемещающий оператор присваивания
 
 private:
