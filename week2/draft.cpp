@@ -44,4 +44,25 @@ struct BaseClass {
 struct DerivedClass : BaseClass {
 	using BaseClass::BaseClass;
 };
+
+
+// Key words: override, final
+struct Base {
+	virtual void update();
+	virtual void foo(int);
+	virtual void bar() const;
+};
+struct Derived : Base {
+	void updata() override;					// error - no such a method in Base (updatA)
+	void foo(int) override;					// ok    - signatures the same in Base and Derived
+	virtual void foo(long) override;		// error - different parm type
+	virtual void foo(int) const override;	// error - this method is constant
+	virtual int  foo(int) override;			// error - different return value type
+	virtual void bar(long);					// ok    - different parm type but not override
+	virtual void bar() const final;			// final - it can't be redefined in a derived classe
+};
+struct Derived2 final : Derived {			// final - Derived2 can't be inherited
+	virtual void bar() const;				// error - Derived::bar is final
+};
+struct Derived3 : Derived2 {};				// error - Derived2 is final
 */
