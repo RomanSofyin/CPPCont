@@ -9,5 +9,7 @@
 
 // add headers that you want to pre-compile here
 #include <iostream>
+#include <list>
+#include <algorithm>
 
 #endif //PCH_H
