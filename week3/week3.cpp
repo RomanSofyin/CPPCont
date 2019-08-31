@@ -9,7 +9,7 @@ void listDemo() {
 	std::list<string> list = { "One", "Two", "Three" };
 	
 	// iterate over all elements
-	for(string & s : list)
+	for (string & s : list)
 		std::cout << s << std::endl;
 	
 	// using iterators
@@ -24,14 +24,14 @@ void listDemo() {
 template <class It>
 size_t max_increasing_len(It p, It q) {
 	size_t res = 0;
-	//std::distance(p, q);
-	for (It i = p, j = p; i != j; i++) {
+	for (It i = p, j = p; p != q;) {
 		if (*j < *(++p))
 			j = p;
-		else
-			res = std::max(res, std::distance(i, j));
-		int a = 5;
-		a *= 2;
+		else {
+			size_t d   = std::distance(i, p);
+			res = std::max(res, d);
+			i = j = p;
+		}
 	}
 
 	return res;

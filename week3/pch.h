@@ -11,5 +11,7 @@
 #include <iostream>
 #include <list>
 #include <algorithm>
+#include <cstddef>
+#include <string>
 
 #endif //PCH_H
