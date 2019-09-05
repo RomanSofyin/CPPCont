@@ -30,4 +30,7 @@ struct Multimethod2
 		// returns the result of applying multimethod to a and b
 		return ...;
 	}
+
+private:
+	std::map<std::pair<std::type_index, std::type_index>, std::function> mmap;
 };

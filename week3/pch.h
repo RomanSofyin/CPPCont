@@ -13,5 +13,8 @@
 #include <algorithm>
 #include <cstddef>
 #include <string>
+#include <map>
+#include <typeindex>
+#include <functional>
 
 #endif //PCH_H

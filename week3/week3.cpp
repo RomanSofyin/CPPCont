@@ -2,6 +2,8 @@
 //
 
 #include "pch.h"
+#include "Shape.h"
+#include "Multimethod2.h"
 
 // std::list demo
 void listDemo() {
@@ -49,4 +51,25 @@ int main()
 	size_t len1 = max_increasing_len(l1.begin(), l1.end()); // 4 coresponding to "1,2,3,4"
 	std::list<int> const l2 = { -3,-2,-1,0,0,1,2,3,4,5 };
 	size_t len2 = max_increasing_len(l2.begin(), l2.end()); // 6 coresponding to "0,1,2,3,4,5"
+
+	// multimethod for the heirs of Shape
+	// returning bool and commutative
+	Multimethod2<Shape, bool, true> is_intersect;
+	// add multimethod implementation for two rectangles
+	is_intersect.addImpl(typeid(Rectangle), typeid(Rectangle), is_intersect_r_r);
+	// add multimethod implementation for a rectangle and a triangle
+	is_intersect.addImpl(typeid(Rectangle), typeid(Triangle), is_intersect_r_t);
+	// create two shapes
+	Shape * s1 = new Triangle();
+	Shape * s2 = new Rectangle();
+	// check that implementation for s1 and s2 exists
+	if (is_intersect.hasImpl(s1, s2))
+	{
+		// is_intersect_r_t(s2, s1) gets called
+		bool res = is_intersect.call(s1, s2);
+		// Note: is_intersect_r_t receives
+		// a rectangle as the first arg and a triangle as the second
+		// here the shapes are passed conversely;
+		// implementation must handle this case properly
+	}
 }
