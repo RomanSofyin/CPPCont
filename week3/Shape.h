@@ -8,7 +8,7 @@ struct Triangle : Shape { };
 
 // Check if two rectangles intersect
 bool is_intersect_r_r(Shape* a, Shape* b) {
-	return rand() % 2;
+	return rand() % 3;
 }
 
 // Check if a rectangle and a triangle intersect

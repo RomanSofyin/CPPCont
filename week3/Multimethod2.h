@@ -11,9 +11,9 @@ struct Multimethod2
 	// f - function (or functor)
 	// accepting two pointers to Base 
 	// and returning a value with type of Result
-	void addImpl(... t1, ... t2, ... f)
+	void addImpl(const type_info & t1, const type_info & t2, std::function<Result (Base*, Base*)> f)
 	{
-
+		
 	}
 
 	// checks wheather implementation of the multimethod exists for the types of objects a and b

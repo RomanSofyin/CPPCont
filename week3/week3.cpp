@@ -3,7 +3,7 @@
 
 #include "pch.h"
 #include "Shape.h"
-#include "Multimethod2.h"
+//#include "Multimethod2.h"
 
 // std::list demo
 void listDemo() {
@@ -51,6 +51,8 @@ int main()
 	size_t len1 = max_increasing_len(l1.begin(), l1.end()); // 4 coresponding to "1,2,3,4"
 	std::list<int> const l2 = { -3,-2,-1,0,0,1,2,3,4,5 };
 	size_t len2 = max_increasing_len(l2.begin(), l2.end()); // 6 coresponding to "0,1,2,3,4,5"
+	
+	auto tmp1 = std::type_index(/* const type_info & */typeid(Shape));
 
 	// multimethod for the heirs of Shape
 	// returning bool and commutative
