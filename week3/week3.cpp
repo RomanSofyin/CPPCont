@@ -3,7 +3,7 @@
 
 #include "pch.h"
 #include "Shape.h"
-//#include "Multimethod2.h"
+#include "Multimethod2.h"
 
 // std::list demo
 void listDemo() {
@@ -64,11 +64,16 @@ int main()
 	// create two shapes
 	Shape * s1 = new Triangle();
 	Shape * s2 = new Rectangle();
+
+	auto it1 = is_intersect.getImpl(s1, s2);
+	auto it2 = is_intersect.getImpl(s2, s1);
+
 	// check that implementation for s1 and s2 exists
 	if (is_intersect.hasImpl(s1, s2))
 	{
 		// is_intersect_r_t(s2, s1) gets called
 		bool res = is_intersect.call(s1, s2);
+		     res = is_intersect.call(s2, s1);
 		// Note: is_intersect_r_t receives
 		// a rectangle as the first arg and a triangle as the second
 		// here the shapes are passed conversely;

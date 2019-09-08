@@ -1,6 +1,8 @@
 #pragma once
 
-struct Shape { };
+struct Shape {
+	virtual ~Shape() {} // add virtual method to make Shape polymorphic
+};
 
 struct Rectangle : Shape { };
 
