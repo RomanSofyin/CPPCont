@@ -34,21 +34,21 @@ public:
 				f);
 	}
 
-#define getImpl_RET_TYPE
-	std::_Tree_const_iterator<
-		std::_Tree_val<
-			std::_Tree_simple_types<
-				std::pair<
-					std::pair<
-						std::type_index,
-						std::type_index
-					> const,
-					std::function<
-						bool __cdecl(Shape*, Shape*)
-					>
-				>
-			>
-		>
+#define getImpl_RET_TYPE                               \
+	std::_Tree_const_iterator<                         \
+		std::_Tree_val<                                \
+			std::_Tree_simple_types<                   \
+				std::pair<                             \
+					std::pair<                         \
+						std::type_index,               \
+						std::type_index                \
+					> const,                           \
+					std::function<                     \
+						bool __cdecl(Shape*, Shape*)   \
+					>                                  \
+				>                                      \
+			>                                          \
+		>                                              \
 	>
 
 	auto getImpl(Base* a, Base* b) const
