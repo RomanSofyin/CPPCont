@@ -65,6 +65,9 @@ int main()
 	Shape * s1 = new Triangle();
 	Shape * s2 = new Rectangle();
 
+	std::cout << "s1: " << typeid(*s1).name() << std::endl; // Triangle
+	std::cout << "s2: " << typeid(*s2).name() << std::endl; // Rectangle
+
 	auto it1 = is_intersect.getImpl(s1, s2);
 	auto it2 = is_intersect.getImpl(s2, s1);
 

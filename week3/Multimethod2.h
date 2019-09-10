@@ -16,8 +16,8 @@ public:
 	// sets implementation of the multimethod for the types t1 and t2 defined by typeid 
 	// f - function (or functor) accepting two pointers to Base and returning a value with type of Result
 	void addImpl(
-		const type_info & t1,					// return type of
-		const type_info & t2,					// . . typeid operator
+		const std::type_info & t1,					// return type of
+		const std::type_info & t2,					// . . typeid operator
 		std::function<Result(Base*, Base*)> f)
 	{
 		// add an element to map so that the Multimethod2 instance will be commutative if needed
@@ -26,12 +26,14 @@ public:
 				std::type_index(t1),
 				std::type_index(t2)),
 			f);
+		/*
 		if (Commutative)
 			mmap.emplace(
 				std::make_pair(
 					std::type_index(t2),
 					std::type_index(t1)),
 				f);
+				*/
 	}
 
 #define getImpl_RET_TYPE                               \
@@ -51,12 +53,16 @@ public:
 		>                                              \
 	>
 
-	auto getImpl(Base* a, Base* b) const
+	// getImpl() is commutative if needed
+	auto getImpl(Base* a, Base* b, bool c = Commutative) const
 	{
-		return mmap.find(
+		auto it = mmap.find(
 			std::make_pair(
 				std::type_index(typeid(*a)),
 				std::type_index(typeid(*b))));
+		if (it == mmap.end() && c)
+			it = mmap.find(std::make_pair(std::type_index(typeid(*b)), std::type_index(typeid(*a))));
+		return it;
 	}
 	
 	// checks wheather implementation of the multimethod exists for the types of objects a and b
@@ -70,11 +76,12 @@ public:
 	}
 
 	// Applies multimethod to the objects via the pointers a and b
+	// If call() gets called then it is guaranteed that the implementation exsists for a and b considering Commutative
 	Result call(Base* a, Base* b) const
 	{
-		// check Commutative
-		if (dynamic_cast<Triangle*>(a) && dynamic_cast<Rectangle*>(b))
-			std::swap(a, b);
-		return getImpl(a, b)->second(a,b);
+		auto it = getImpl(a, b, false);
+		if (it != mmap.end())
+			return it->second(a, b);
+		return getImpl(a, b)->second(b, a);
 	}
 };
