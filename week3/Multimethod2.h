@@ -6,6 +6,13 @@
 template<class Base, class Result, bool Commutative>
 struct Multimethod2
 {
+private:
+	typedef std::pair<std::type_index, std::type_index> mmap_key;
+	typedef std::function <Result(Base*, Base*)>        mmap_fun;
+
+	std::map<mmap_key, mmap_fun> mmap;
+
+public:
 	// sets implementation of the multimethod for the types t1 and t2 defined by typeid 
 	// f - function (or functor) accepting two pointers to Base and returning a value with type of Result
 	void addImpl(
@@ -26,6 +33,23 @@ struct Multimethod2
 					std::type_index(t1)),
 				f);
 	}
+
+#define getImpl_RET_TYPE
+	std::_Tree_const_iterator<
+		std::_Tree_val<
+			std::_Tree_simple_types<
+				std::pair<
+					std::pair<
+						std::type_index,
+						std::type_index
+					> const,
+					std::function<
+						bool __cdecl(Shape*, Shape*)
+					>
+				>
+			>
+		>
+	>
 
 	auto getImpl(Base* a, Base* b) const
 	{
@@ -53,10 +77,4 @@ struct Multimethod2
 			std::swap(a, b);
 		return getImpl(a, b)->second(a,b);
 	}
-
-private:
-	typedef std::pair<std::type_index, std::type_index> mmap_key;
-	typedef std::function <Result(Base*, Base*)>        mmap_fun;
-
-	std::map<mmap_key, mmap_fun> mmap;
 };
