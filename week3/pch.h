@@ -16,5 +16,6 @@
 #include <map>
 #include <typeindex>
 #include <functional>
+#include <iterator>
 
 #endif //PCH_H
