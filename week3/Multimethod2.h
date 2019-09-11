@@ -36,7 +36,8 @@ public:
 				*/
 	}
 
-#define getImpl_RET_TYPE                               \
+// This is the type the 'it' obj in call() func assigned to
+#define getImpl_RET_TYPE1                              \
 	std::_Tree_const_iterator<                         \
 		std::_Tree_val<                                \
 			std::_Tree_simple_types<                   \
@@ -52,14 +53,18 @@ public:
 			>                                          \
 		>                                              \
 	>
-
+#define getImpl_RET_TYPE2 mmap.find(std::make_pair(std::type_index(typeid(*a)),std::type_index(typeid(*b))))
 	// getImpl() is commutative if needed
+	// Commented the line below some kind of which should be used to complete the task on stepik
+	//auto getImpl(Base* a, Base* b, bool c = Commutative) -> decltype(getImpl_RET_TYPE2) const
 	auto getImpl(Base* a, Base* b, bool c = Commutative) const
 	{
 		auto it = mmap.find(
 			std::make_pair(
 				std::type_index(typeid(*a)),
-				std::type_index(typeid(*b))));
+				std::type_index(typeid(*b))
+			)
+		);
 		if (it == mmap.end() && c)
 			it = mmap.find(std::make_pair(std::type_index(typeid(*b)), std::type_index(typeid(*a))));
 		return it;
