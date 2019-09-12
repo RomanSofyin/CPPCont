@@ -64,6 +64,19 @@ void advance1(I& i, size_t n) {
 	advance_(i, n, typename std::iterator_traits<I>::iterator_category());
 }
 
+// reverse iterator demo
+void reverseIterator_demo() {
+	std::list<int> l = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+	// list<int>::reverse_iterator
+	for (auto i = l.rbegin(); i != l.rend(); ++i)
+		std::cout << *i << std::endl;
+	// iterator <-> reverse_iterator conversion
+	std::list<int>::iterator i = l.begin();
+	advance(i, 5); // i -> 5
+	std::list<int>::reverse_iterator ri(i);	// iterator -> reverse_iterator; ri -> 4
+	i = ri.base();							// reverse_iterator -> iterator; i  -> 5
+}
+
 int main()
 {
 	listDemo();
@@ -111,5 +124,7 @@ int main()
 	 */
 	
 	advance1<decltype(is_intersect.getImpl(t1,r1))>(it1, 1);
+
+	reverseIterator_demo();
 
 }

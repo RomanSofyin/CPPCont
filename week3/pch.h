@@ -17,5 +17,6 @@
 #include <typeindex>
 #include <functional>
 #include <iterator>
+#include <vector>
 
 #endif //PCH_H
