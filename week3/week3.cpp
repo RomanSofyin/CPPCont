@@ -127,4 +127,27 @@ int main()
 
 	reverseIterator_demo();
 
+	// read sequence of double's from input.txt to v
+	std::ifstream file("input.txt");
+	/* Important note!
+	 * ===============
+	 * if the outer brackets would be ommited in the expression "(std::istream_iterator<double>(file))",
+	 * the whole expression below will be not the 'v' variable definition with type of vector,
+	 * but the function declaration named 'v' which recieves two parms:
+	 *  o parm1 - istream_iterator<double>
+	 *  o parm2 - anonymous pointer to a function which receives no parms and returns istream_iterator<double>
+	 * and returns vector<double>.
+	 * The clue: 
+	 *  - declaration of a func parms can't be surrounded with brackets, but an arg (in a func call) could be"
+	 *    - this fact allows to let the compiler know what we mean
+	 *
+	 * More info:
+	 *  o http://easy-coding.blogspot.com/2009/02/c.html?m=1
+	 *  o https://stepik.org/lesson/546/step/7?course=%D0%9F%D1%80%D0%BE%D0%B3%D1%80%D0%B0%D0%BC%D0%BC%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5-%D0%BD%D0%B0-%D1%8F%D0%B7%D1%8B%D0%BA%D0%B5-C%2B%2B&unit=869
+	 */
+	std::vector<double> v((std::istream_iterator<double>(file)), std::istream_iterator<double>());
+	// Taking the trick described above, it's better to code it as below:
+	auto f_it1 = std::istream_iterator<double>(file);
+	auto f_it2 = std::istream_iterator<double>();
+	std::vector<double> v(f_it1, f_it2);
 }

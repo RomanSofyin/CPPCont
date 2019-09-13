@@ -18,5 +18,6 @@
 #include <functional>
 #include <iterator>
 #include <vector>
+#include <fstream>
 
 #endif //PCH_H
