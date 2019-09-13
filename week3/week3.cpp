@@ -149,5 +149,5 @@ int main()
 	// Taking the trick described above, it's better to code it as below:
 	auto f_it1 = std::istream_iterator<double>(file);
 	auto f_it2 = std::istream_iterator<double>();
-	std::vector<double> v(f_it1, f_it2);
+	std::vector<double> v_(f_it1, f_it2);
 }
