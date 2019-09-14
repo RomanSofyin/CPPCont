@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 template<class T>
 class VectorList
@@ -52,3 +52,4 @@ public:
 private:
 	ListT data_;
 };
+// Просто чтобы проверить поддерживаются ли символы русского алфавита
