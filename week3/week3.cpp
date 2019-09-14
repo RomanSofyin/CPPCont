@@ -1,9 +1,10 @@
-// week3.cpp : This file contains the 'main' function. Program execution begins and ends there.
+﻿// week3.cpp : This file contains the 'main' function. Program execution begins and ends there.
 //
 
 #include "pch.h"
 #include "Shape.h"
 #include "Multimethod2.h"
+#include "VectorList.h"
 
 // std::list demo
 void listDemo() {
@@ -75,6 +76,74 @@ void reverseIterator_demo() {
 	advance(i, 5); // i -> 5
 	std::list<int>::reverse_iterator ri(i);	// iterator -> reverse_iterator; ri -> 4
 	i = ri.base();							// reverse_iterator -> iterator; i  -> 5
+}
+
+void vectorList_test() {
+	VectorList<char> vlist;
+
+	std::vector<char> v1;
+	v1.push_back('A');
+	v1.push_back('B');
+	v1.push_back('C');
+
+	std::vector<char> v2;
+	v2.push_back('D');
+	v2.push_back('E');
+	v2.push_back('F');
+	v2.push_back('G');
+	vlist.append(v1.begin(), v1.end());
+	vlist.append(v2.begin(), v2.end());
+
+	auto i = vlist.begin();
+
+	std::cout << "Size is " << vlist.size() << std::endl;
+	std::cout << "begin is " << *i << std::endl;
+	std::cout << "std::distance(begin,end)﻿ " << (std::distance(vlist.begin(), vlist.end())) << std::endl;
+	std::cout << "*(++begin) == 'B'? " << (*++vlist.begin() == 'B') << std::endl;
+	std::cout << "*(++begin) == 'A'? " << (*++vlist.begin() == 'A') << std::endl;
+	std::cout << std::endl;
+
+
+	std::cout << "Test ++i" << std::endl;
+	for (i = vlist.begin(); i != vlist.end(); ++i)
+		std::cout << *i << " ";
+	std::cout << std::endl;
+	std::cout << std::endl;
+
+	std::cout << "Test i++" << std::endl;
+	for (i = vlist.begin(); i != vlist.end(); i++)
+		std::cout << *i << " ";
+	std::cout << std::endl;
+	std::cout << std::endl;
+
+	std::cout << "Test --i" << std::endl;
+	for (i = vlist.end(); i != vlist.begin();)
+		std::cout << *--i << " ";
+	std::cout << std::endl;
+	std::cout << std::endl;
+
+	std::cout << "Test i--" << std::endl;
+	for (i = vlist.end(); i != vlist.begin();) {
+		i--;
+		std::cout << *i << " ";
+	}
+	std::cout << std::endl;
+	std::cout << std::endl;
+
+
+	std::cout << std::endl;
+	auto j = vlist.rbegin();
+	std::cout << "rbegin is " << *j << std::endl;
+	j = --vlist.rend();
+	std::cout << "--rend is " << *j << std::endl;
+
+	std::cout << "Test reverse_const_iterator ++" << std::endl;
+	for (j = vlist.rbegin(); j != vlist.rend(); ++j)
+		std::cout << *j << " ";
+	std::cout << std::endl;
+
+	system("pause");
+	return;
 }
 
 int main()
@@ -150,4 +219,6 @@ int main()
 	auto f_it1 = std::istream_iterator<double>(file);
 	auto f_it2 = std::istream_iterator<double>();
 	std::vector<double> v_(f_it1, f_it2);
+
+	vectorList_test();
 }
