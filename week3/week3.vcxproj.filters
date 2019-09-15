@@ -35,5 +35,8 @@
     <ClInclude Include="VectorList.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Range.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

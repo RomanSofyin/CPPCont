@@ -162,6 +162,7 @@
   <ItemGroup>
     <ClInclude Include="Multimethod2.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="Range.h" />
     <ClInclude Include="Shape.h" />
     <ClInclude Include="VectorList.h" />
   </ItemGroup>

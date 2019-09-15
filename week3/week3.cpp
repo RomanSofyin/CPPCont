@@ -4,7 +4,8 @@
 #include "pch.h"
 #include "Shape.h"
 #include "Multimethod2.h"
-#include "VectorList.h"
+//#include "VectorList.h"
+#include "Range.h"
 
 // std::list demo
 void listDemo() {
@@ -78,6 +79,19 @@ void reverseIterator_demo() {
 	i = ri.base();							// reverse_iterator -> iterator; i  -> 5
 }
 
+void rangeClass_demo() {
+	// std::find requires an input iterator
+	auto range = Range<15, 25>();
+	auto itr = std::find(range.begin(), range.end(), 18);
+	std::cout << *itr << '\n'; // 18
+
+	// Range::iterator also satisfies range-based for requirements
+	for (long l : Range<3, 5>()) {
+		std::cout << l << ' '; // 3 4 5
+	}
+	std::cout << '\n';
+}
+/*
 void vectorList_test() {
 	VectorList<char> vlist;
 
@@ -145,7 +159,7 @@ void vectorList_test() {
 	system("pause");
 	return;
 }
-
+*/
 int main()
 {
 	listDemo();
@@ -219,5 +233,7 @@ int main()
 	auto f_it2 = std::istream_iterator<double>();
 	std::vector<double> v_(f_it1, f_it2);
 
-	vectorList_test();
+	rangeClass_demo();
+
+	//vectorList_test();
 }

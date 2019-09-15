@@ -19,13 +19,7 @@ public:
 
 	// Method which will be used to fill a VectorList
 	// It guarantees that there will not be empty arrays
-	template<class It>
-	void append(It p, It q); // it defined outside of class
-/*  {
-		if (p != q)
-			data_.push_back(VectT(p,q));
-	}
-*/
+	//template<class It> void append(It p, It q); // it defined outside of class
 
 	bool empty() const { return size() == 0; }
 
@@ -39,22 +33,17 @@ public:
 	}
 
 	// TBD: const_iterator
-	struct std::bidirectional_iterator_tag const_iterator : 
-		public std::interator< 	// public inheritance is used by default for structures (private - for classes)
+	struct std::bidirectional_iterator_tag const_iterator :	std::iterator< 	// public inheritance is used by default for structures (private - for classes)
 			std::bidirectional_iterator_tag,	// category
-			T,									// value_type
+			const T,							// value_type
 			size_t,								// defference_type
 			const T *,							// pointer
 			const T &> {						// reference
-	private:
-		T num;
-	public:
-		/*
 		iterator() = default;
 		iterator(const iterator&) = default;
 		iterator& operator=(const iterator&) = default;
 		~iterator() = default;
-		reference operator*() const { return pos.dereference(); }
+		reference operator*() const { return .dereference(); }
 		iterator& operator++() { pos.increment(); return *this; }
 		iterator operator++(int) { auto old = *this; ++(*this); return old; }
 
@@ -64,21 +53,28 @@ public:
 		// Операции, необходимые для BidirectionalIterator.
 		iterator& operator--() { pos.decrement(); return *this; }
 		iterator operator--(int) { auto old = *this; --(*this); return old; }
-		*/
+	private:
+		T elem;
 	};
 
-	// TBD: begin / end
-	/*const_iterator begin() const { return ...; }*/
-	/*const_iterator end()   const { return ...; }*/
+	// TBD: begin - end
+	const_iterator begin() const { return const_iterator(*(*(data_.begin()).begin())); }
+	//const_iterator end()   const { return ...; }*/
 
 	// TBD: const_reverse_iterator
 	/*... const_reverse_iterator ...*/
 
-	// TBD: rbegin / rend
+	// TBD: rbegin - rend
 	/*const_reverse_iterator rbegin() const { return ...; }*/
 	/*const_reverse_iterator rend()   const { return ...; }*/
 
 private:
 	ListT data_;
 };
-// Просто чтобы проверить поддерживаются ли символы русского алфавита
+
+/*template<class It>
+void VectorList::append(It p, It q) {
+	if (p != q)
+		data_.push_back(VectT(p, q));
+}
+*/
