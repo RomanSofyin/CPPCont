@@ -212,7 +212,6 @@ int main()
 	 *
 	 * More info:
 	 *  o http://easy-coding.blogspot.com/2009/02/c.html?m=1
-	 *  o https://stepik.org/lesson/546/step/7?course=%D0%9F%D1%80%D0%BE%D0%B3%D1%80%D0%B0%D0%BC%D0%BC%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5-%D0%BD%D0%B0-%D1%8F%D0%B7%D1%8B%D0%BA%D0%B5-C%2B%2B&unit=869
 	 */
 	std::vector<double> v((std::istream_iterator<double>(file)), std::istream_iterator<double>());
 	// Taking the trick described above, it's better to code it as below:

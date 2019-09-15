@@ -4,7 +4,7 @@ template<class T>
 class VectorList
 {
 private:
-	using VectT  = std::vector<T>;
+	using VectT = std::vector<T>;
 	using ListT = std::list<VectT>;
 
 public:
@@ -29,25 +29,54 @@ public:
 
 	bool empty() const { return size() == 0; }
 
-	// TBD: size
 	size_t size() const
 	{
-		...
+		size_t n = 0;
+		for (VectT v : data) {
+			n += v.size();
+		}
+		return n;
 	}
 
 	// TBD: const_iterator
-	... const_iterator ...
+	struct std::bidirectional_iterator_tag const_iterator : 
+		public std::interator< 	// public inheritance is used by default for structures (private - for classes)
+			std::bidirectional_iterator_tag,	// category
+			T,									// value_type
+			size_t,								// defference_type
+			const T *,							// pointer
+			const T &> {						// reference
+	private:
+		T num;
+	public:
+		/*
+		iterator() = default;
+		iterator(const iterator&) = default;
+		iterator& operator=(const iterator&) = default;
+		~iterator() = default;
+		reference operator*() const { return pos.dereference(); }
+		iterator& operator++() { pos.increment(); return *this; }
+		iterator operator++(int) { auto old = *this; ++(*this); return old; }
 
-		// TBD: begin / end
-	const_iterator begin() const { return ...; }
-	const_iterator end()   const { return ...; }
+		// Операции, необходимые для InputIterator.
+		pointer operator->() const;
+
+		// Операции, необходимые для BidirectionalIterator.
+		iterator& operator--() { pos.decrement(); return *this; }
+		iterator operator--(int) { auto old = *this; --(*this); return old; }
+		*/
+	};
+
+	// TBD: begin / end
+	/*const_iterator begin() const { return ...; }*/
+	/*const_iterator end()   const { return ...; }*/
 
 	// TBD: const_reverse_iterator
-	... const_reverse_iterator ...
+	/*... const_reverse_iterator ...*/
 
-		// TBD: rbegin / rend
-	const_reverse_iterator rbegin() const { return ...; }
-	const_reverse_iterator rend()   const { return ...; }
+	// TBD: rbegin / rend
+	/*const_reverse_iterator rbegin() const { return ...; }*/
+	/*const_reverse_iterator rend()   const { return ...; }*/
 
 private:
 	ListT data_;
