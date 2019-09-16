@@ -4,7 +4,7 @@
 #include "pch.h"
 #include "Shape.h"
 #include "Multimethod2.h"
-//#include "VectorList.h"
+#include "VectorList.h"
 #include "Range.h"
 
 // std::list demo
@@ -91,7 +91,7 @@ void rangeClass_demo() {
 	}
 	std::cout << '\n';
 }
-/*
+
 void vectorList_test() {
 	VectorList<char> vlist;
 
@@ -108,7 +108,7 @@ void vectorList_test() {
 	vlist.append(v1.begin(), v1.end());
 	vlist.append(v2.begin(), v2.end());
 
-	auto i = vlist.begin();
+	/*auto i = vlist.begin();
 
 	std::cout << "Size is " << vlist.size() << std::endl;
 	std::cout << "begin is " << *i << std::endl;
@@ -156,10 +156,10 @@ void vectorList_test() {
 		std::cout << *j << " ";
 	std::cout << std::endl;
 
-	system("pause");
+	system("pause");*/
 	return;
 }
-*/
+
 int main()
 {
 	listDemo();
@@ -235,5 +235,5 @@ int main()
 
 	rangeClass_demo();
 
-	//vectorList_test();
+	vectorList_test();
 }
