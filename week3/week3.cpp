@@ -107,10 +107,11 @@ void vectorList_test() {
 	v2.push_back('G');
 	vlist.append(v1.begin(), v1.end());
 	vlist.append(v2.begin(), v2.end());
+	
+	auto v_size = vlist.size();
+	auto i = vlist.begin();
 
-	/*auto i = vlist.begin();
-
-	std::cout << "Size is " << vlist.size() << std::endl;
+	/*std::cout << "Size is " << v_size << std::endl;
 	std::cout << "begin is " << *i << std::endl;
 	std::cout << "std::distance(begin,end)﻿ " << (std::distance(vlist.begin(), vlist.end())) << std::endl;
 	std::cout << "*(++begin) == 'B'? " << (*++vlist.begin() == 'B') << std::endl;
@@ -236,4 +237,6 @@ int main()
 	rangeClass_demo();
 
 	vectorList_test();
+
+	std::list<int>::iterator iter111;
 }
