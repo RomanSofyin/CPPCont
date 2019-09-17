@@ -41,11 +41,11 @@ public:
 			size_t,								// defference_type
 			const T *,							// pointer
 			const T &> {						// reference
-		//const_iterator() = default;
+		const_iterator() = default;
 		//const_iterator(const const_iterator&) = default;
 		//const_iterator& operator=(const const_iterator&) = default;
-		const_iterator(const T * e, typename VectT::iterator it_v, typename ListT::iterator it_l)
-		: elem(e), it_vect(it_v), it_list(it_l) {}
+		const_iterator(const ListT * d, typename ListT::const_iterator it_l, typename VectT::const_iterator it_v)
+		: d(d), it_l(it_l), it_v(it_v) {}
 		~const_iterator() = default;
 		/*reference operator*() const { return .dereference(); }
 		iterator& operator++() { pos.increment(); return *this; }
@@ -58,24 +58,18 @@ public:
 		iterator& operator--() { pos.decrement(); return *this; }
 		iterator operator--(int) { auto old = *this; --(*this); return old; }*/
 	private:
-		const T* elem;
-		typename VectT::iterator it_vect;
-		typename ListT::iterator it_list;
+		const ListT * d;
+		typename VectT::const_iterator it_v;
+		typename ListT::const_iterator it_l;
 	};
 
 	// TBD: begin - end
 	const_iterator begin() const {
-		auto a = *(data_.begin()->begin());
-		auto b = data_.begin();
-		auto c = data_.begin()->begin();
-		auto d = const_iterator(a, c, b);
-		return const_iterator();
-		/*return const_iterator(
-			*(data_.begin()->begin()),
-			data_.begin(),
-			data_.begin()->begin()
-		);*/
+		auto const_it_l = data_.begin();
+		auto const_it_v = const_it_l->begin();
+		return const_iterator(&this->data_, const_it_l, const_it_v);
 	}
+
 	//const_iterator end()   const { return ...; }
 
 	// TBD: const_reverse_iterator

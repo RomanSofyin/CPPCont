@@ -111,9 +111,9 @@ void vectorList_test() {
 	auto v_size = vlist.size();
 	auto i = vlist.begin();
 
-	/*std::cout << "Size is " << v_size << std::endl;
+	std::cout << "Size is " << v_size << std::endl;
 	std::cout << "begin is " << *i << std::endl;
-	std::cout << "std::distance(begin,end)﻿ " << (std::distance(vlist.begin(), vlist.end())) << std::endl;
+	/*std::cout << "std::distance(begin,end)﻿ " << (std::distance(vlist.begin(), vlist.end())) << std::endl;
 	std::cout << "*(++begin) == 'B'? " << (*++vlist.begin() == 'B') << std::endl;
 	std::cout << "*(++begin) == 'A'? " << (*++vlist.begin() == 'A') << std::endl;
 	std::cout << std::endl;
