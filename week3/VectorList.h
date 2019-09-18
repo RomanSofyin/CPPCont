@@ -35,20 +35,25 @@ public:
 	}
 
 	// TBD: const_iterator
-	struct const_iterator :	public std::iterator<
-			std::bidirectional_iterator_tag,	// category
-			const T,							// value_type
-			size_t,								// defference_type
-			const T *,							// pointer
-			const T &> {						// reference
+	using VectorList_const_iterator = std::iterator<
+		std::bidirectional_iterator_tag,		// category
+		const T,								// value_type
+		size_t,									// defference_type
+		const T *,								// pointer
+		const T &>;								// reference
+	struct const_iterator :	public VectorList_const_iterator {						
 		const_iterator() = default;
 		//const_iterator(const const_iterator&) = default;
 		//const_iterator& operator=(const const_iterator&) = default;
-		const_iterator(const ListT * d, typename ListT::const_iterator it_l, typename VectT::const_iterator it_v)
-		: d(d), it_l(it_l), it_v(it_v) {}
+		const_iterator(
+			const ListT * d,
+			typename ListT::const_iterator it_l,
+			typename VectT::const_iterator it_v
+		) : d(d), it_l(it_l), it_v(it_v)
+		{}
 		~const_iterator() = default;
-		/*reference operator*() const { return .dereference(); }
-		iterator& operator++() { pos.increment(); return *this; }
+		typename VectorList_const_iterator::reference operator*()  { return *it_v; }
+		/*iterator& operator++() { pos.increment(); return *this; }
 		iterator operator++(int) { auto old = *this; ++(*this); return old; }
 
 		// Операции, необходимые для InputIterator.
