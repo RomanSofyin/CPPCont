@@ -105,21 +105,27 @@ void vectorList_test() {
 	v2.push_back('E');
 	v2.push_back('F');
 	v2.push_back('G');
+
+	std::vector<char> v3;
+
 	vlist.append(v1.begin(), v1.end());
 	vlist.append(v2.begin(), v2.end());
+	vlist.append(v3.begin(), v3.end());	// v3 не будет добавлен, поскольку пустой
+
 	
 	auto v_size = vlist.size();
 	auto i = vlist.begin();
+	auto d = std::distance(vlist.begin(), vlist.end());
 
 	std::cout << "Size is " << v_size << std::endl;
 	std::cout << "begin is " << *i << std::endl;
-	std::cout << "std::distance(begin,end) " << (std::distance(vlist.begin(), vlist.end())) << std::endl;
-	/*std::cout << "*(++begin) == 'B'? " << (*++vlist.begin() == 'B') << std::endl;
+	std::cout << "std::distance(begin,end) " << d << std::endl;
+	std::cout << "*(++begin) == 'B'? " << (*++vlist.begin() == 'B') << std::endl;
 	std::cout << "*(++begin) == 'A'? " << (*++vlist.begin() == 'A') << std::endl;
 	std::cout << std::endl;
 
 
-	std::cout << "Test ++i" << std::endl;
+	/*std::cout << "Test ++i" << std::endl;
 	for (i = vlist.begin(); i != vlist.end(); ++i)
 		std::cout << *i << " ";
 	std::cout << std::endl;
@@ -237,6 +243,4 @@ int main()
 	rangeClass_demo();
 
 	vectorList_test();
-
-	std::list<int>::iterator iter111;
 }

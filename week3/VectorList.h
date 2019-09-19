@@ -56,13 +56,14 @@ public:
 		//const_iterator& operator=(const const_iterator&) = default;
 		
 		bool operator==(const const_iterator& rhs) {
-			return true;
+			bool b = (d == rhs.d) && (it_l == rhs.it_l) && (it_v == rhs.it_v);
+			return b;
 		}
 		bool operator!=(const const_iterator& rhs) {
 			return !operator==(rhs);
 		}
 
-		typename VectorList_const_iterator::reference operator*()  {
+		typename VectorList_const_iterator::reference operator*() {
 			return *it_v;
 		}
 
@@ -75,10 +76,12 @@ public:
 			this->operator++();		// pre-increment
 			return old;				// return old value
 		}
-		/*
+		
 		// Операции, необходимые для InputIterator.
-		pointer operator->() const;
-
+		typename VectorList_const_iterator::pointer operator->() const {
+			return &(*it_v);
+		}
+/*
 		// Операции, необходимые для BidirectionalIterator.
 		iterator& operator--() { pos.decrement(); return *this; }
 		iterator operator--(int) { auto old = *this; --(*this); return old; }*/
@@ -88,20 +91,42 @@ public:
 		typename ListT::const_iterator it_l;
 
 		void inc() {
-			//auto b = it_v;
+			if (++it_v != it_l->end())
+				return;
+			// что если it_l пустой ???
+			if (++it_l != d->end()) {
+				it_v = it_l->begin();
+				return;
+			}
+			--it_l;
+			it_v = it_l->end();
 		}
+
+		void dec() {
+			if (it_v != it_l->begin()) {
+				it_v--;
+				return;
+			}
+			if (it_l != d->begin()) {
+				it_l--;
+				it_v = --(it_l->end());
+				return;
+			}
+			return;
+		}
+
 	};
 
 	// TBD: begin - end
 	const_iterator begin() const {
-		auto const_it_l = data_.begin();		// ListT::const_iterator (aka std::_List_const_iterator)   pointing to a vector
-		auto const_it_v = const_it_l->begin();	// VectT::const_iterator (aka std::_Vector_const_iterator) pointing to a T
+		auto const_it_l = data_.begin();			// ListT::const_iterator (aka std::_List_const_iterator)   pointing to a vector
+		auto const_it_v = const_it_l->begin();		// VectT::const_iterator (aka std::_Vector_const_iterator) pointing to a T
 		return const_iterator(&this->data_, const_it_l, const_it_v);
 	}
 
 	const_iterator end() const {
-		auto const_it_l = data_.end();          // ListT::const_iterator (aka std::_List_const_iterator)   pointing to a vector
-		auto const_it_v = const_it_l->end();	// VectT::const_iterator (aka std::_Vector_const_iterator) pointing to a T
+		auto const_it_l = data_.end();				// ListT::const_iterator (aka std::_List_const_iterator)   pointing to a vector
+		auto const_it_v = (--const_it_l)->end();	// VectT::const_iterator (aka std::_Vector_const_iterator) pointing to a T
 		return const_iterator(&this->data_, const_it_l, const_it_v);
 	}
 
