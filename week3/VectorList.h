@@ -41,21 +41,41 @@ public:
 		size_t,									// defference_type
 		const T *,								// pointer
 		const T &>;								// reference
-	struct const_iterator :	public VectorList_const_iterator {						
+	struct const_iterator :	public VectorList_const_iterator {
+		
 		const_iterator() = default;
-		//const_iterator(const const_iterator&) = default;
-		//const_iterator& operator=(const const_iterator&) = default;
+		const_iterator(const const_iterator&) = default;
 		const_iterator(
-			const ListT * d,
+			const ListT* d,
 			typename ListT::const_iterator it_l,
 			typename VectT::const_iterator it_v
 		) : d(d), it_l(it_l), it_v(it_v)
 		{}
 		~const_iterator() = default;
-		typename VectorList_const_iterator::reference operator*()  { return *it_v; }
-		/*iterator& operator++() { pos.increment(); return *this; }
-		iterator operator++(int) { auto old = *this; ++(*this); return old; }
 
+		//const_iterator& operator=(const const_iterator&) = default;
+		
+		bool operator==(const const_iterator& rhs) {
+			return true;
+		}
+		bool operator!=(const const_iterator& rhs) {
+			return !operator==(rhs);
+		}
+
+		typename VectorList_const_iterator::reference operator*()  {
+			return *it_v;
+		}
+
+		const_iterator& operator++() {
+			inc();
+			return *this;
+		}
+		const_iterator operator++(int) {
+			auto old(*this);		// copy old value
+			this->operator++();		// pre-increment
+			return old;				// return old value
+		}
+		/*
 		// Операции, необходимые для InputIterator.
 		pointer operator->() const;
 
@@ -66,16 +86,24 @@ public:
 		const ListT * d;
 		typename VectT::const_iterator it_v;
 		typename ListT::const_iterator it_l;
+
+		void inc() {
+			//auto b = it_v;
+		}
 	};
 
 	// TBD: begin - end
 	const_iterator begin() const {
-		auto const_it_l = data_.begin();
-		auto const_it_v = const_it_l->begin();
+		auto const_it_l = data_.begin();		// ListT::const_iterator (aka std::_List_const_iterator)   pointing to a vector
+		auto const_it_v = const_it_l->begin();	// VectT::const_iterator (aka std::_Vector_const_iterator) pointing to a T
 		return const_iterator(&this->data_, const_it_l, const_it_v);
 	}
 
-	//const_iterator end()   const { return ...; }
+	const_iterator end() const {
+		auto const_it_l = data_.end();          // ListT::const_iterator (aka std::_List_const_iterator)   pointing to a vector
+		auto const_it_v = const_it_l->end();	// VectT::const_iterator (aka std::_Vector_const_iterator) pointing to a T
+		return const_iterator(&this->data_, const_it_l, const_it_v);
+	}
 
 	// TBD: const_reverse_iterator
 	/*... const_reverse_iterator ...*/
