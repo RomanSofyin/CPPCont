@@ -95,6 +95,19 @@ void rangeClass_demo() {
 void vectorList_test() {
 	VectorList<char> vlist;
 
+	{	// do some checks for an empty VectorList instance
+		auto v_size = vlist.size();
+		auto i = vlist.begin();
+		auto d = std::distance(vlist.begin(), vlist.end());
+
+		std::cout << "Size is " << v_size << std::endl;
+		//std::cout << "begin is " << *i << std::endl;									// I don't know if I need to allow this for vlist having empty vector
+		std::cout << "std::distance(begin,end) " << d << std::endl;
+		std::cout << "*(++begin) == 'B'? " << (*++vlist.begin() == 'B') << std::endl;
+		std::cout << "*(++begin) == 'A'? " << (*++vlist.begin() == 'A') << std::endl;
+		std::cout << std::endl;
+	}
+
 	std::vector<char> v1;
 	v1.push_back('A');
 	v1.push_back('B');

@@ -53,7 +53,7 @@ public:
 		{}
 		~const_iterator() = default;
 
-		//const_iterator& operator=(const const_iterator&) = default;
+		const_iterator& operator=(const const_iterator&) = default;
 		
 		bool operator==(const const_iterator& rhs) {
 			bool b = (d == rhs.d) && (it_l == rhs.it_l) && (it_v == rhs.it_v);
@@ -64,6 +64,7 @@ public:
 		}
 
 		typename VectorList_const_iterator::reference operator*() {
+			// I don't know if I need to allow this for vlist having empty vector
 			return *it_v;
 		}
 
@@ -79,19 +80,33 @@ public:
 		
 		// Операции, необходимые для InputIterator.
 		typename VectorList_const_iterator::pointer operator->() const {
-			return &(*it_v);
+			return &(*it_v);	// the same as "return &it_v.operator*()"
 		}
-/*
+
 		// Операции, необходимые для BidirectionalIterator.
-		iterator& operator--() { pos.decrement(); return *this; }
-		iterator operator--(int) { auto old = *this; --(*this); return old; }*/
+		const_iterator& operator--() {
+			dec();
+			return *this;
+		}
+		const_iterator operator--(int) {
+			auto old(*this);		// copy old value
+			this->operator--();		// pre-increment
+			return old;				// return old value
+		}
 	private:
 		const ListT * d;
 		typename VectT::const_iterator it_v;
 		typename ListT::const_iterator it_l;
 
 		void inc() {
-			if (++it_v != it_l->end())
+			/* General note for iterators:
+			 * ===========================
+			 * operators ++, --, *, and -> are dangerous
+			 * it should be checked that an element, pointed to by the iterator, exists
+			 */
+			//if (it_l != d->end())			// if VectorList is not empty
+			//	if (it_v != it_l)
+			if (++it_v != it_l->end())		// currently here we are failing
 				return;
 			// что если it_l пустой ???
 			if (++it_l != d->end()) {
@@ -119,14 +134,19 @@ public:
 
 	// TBD: begin - end
 	const_iterator begin() const {
-		auto const_it_l = data_.begin();			// ListT::const_iterator (aka std::_List_const_iterator)   pointing to a vector
-		auto const_it_v = const_it_l->begin();		// VectT::const_iterator (aka std::_Vector_const_iterator) pointing to a T
+		typename VectT::const_iterator const_it_v;					// aka std::_Vector_const_iterator, pointing to a T; *default constructor gets called here - VectT::const_iterator()
+		typename ListT::const_iterator const_it_l = data_.begin();	// aka std::_List_const_iterator, pointing to a vector
+		if (const_it_l != data_.end())								// if data_ is not empty list; data_ itself won't be null because it gets initialized in VectorList()
+			const_it_v = const_it_l->begin();
 		return const_iterator(&this->data_, const_it_l, const_it_v);
 	}
 
 	const_iterator end() const {
-		auto const_it_l = data_.end();				// ListT::const_iterator (aka std::_List_const_iterator)   pointing to a vector
-		auto const_it_v = (--const_it_l)->end();	// VectT::const_iterator (aka std::_Vector_const_iterator) pointing to a T
+		typename VectT::const_iterator const_it_v;
+		typename ListT::const_iterator const_it_l = data_.end();
+		if (const_it_l != data_.begin()) {							// if data_ is not empty list
+			const_it_v = (--const_it_l)->end();
+		}
 		return const_iterator(&this->data_, const_it_l, const_it_v);
 	}
 
