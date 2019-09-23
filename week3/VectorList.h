@@ -36,11 +36,12 @@ public:
 
 	// TBD: const_iterator
 	using VectorList_const_iterator = std::iterator<
-		std::bidirectional_iterator_tag,		// category
-		const T,								// value_type
-		size_t,									// defference_type
-		const T *,								// pointer
-		const T &>;								// reference
+		std::bidirectional_iterator_tag,				// category
+		const T,										// value_type
+		size_t,											// defference_type
+		const T *,										// pointer
+		const T &>;										// reference
+	
 	struct const_iterator :	public VectorList_const_iterator {
 		
 		const_iterator() = default;
@@ -64,7 +65,7 @@ public:
 		}
 
 		typename VectorList_const_iterator::reference operator*() {
-			// I don't know if I need to allow this for vlist having empty vector
+			// I don't know if I need to allow this for vlist having NULL vector (result of VectT::const_iterator())
 			return *it_v;
 		}
 
@@ -94,21 +95,21 @@ public:
 			return old;				// return old value
 		}
 	private:
-		const ListT * d;
-		typename VectT::const_iterator it_v;
-		typename ListT::const_iterator it_l;
+		const		ListT *					d;		// poiter to an instance of list<vector<T>> (aka ListT);					can't be NULL because VectorList() initializes VectorList::data_ with list<>();
+		typename	ListT::const_iterator	it_l;	// *iterator* to an element of list<vector<T>>	which type is vector<T>;	can't be NULL because d can't be NULL; in case of empty *d, it is d->end() ( <==> d->begin() )
+		typename	VectT::const_iterator	it_v;	// *iterator* to an element of vector<T>		which type is T;			can   be NULL when *d is empty
 
 		void inc() {
 			/* General note for iterators:
 			 * ===========================
 			 * operators ++, --, *, and -> are dangerous
-			 * it should be checked that an element, pointed to by the iterator, exists
+			 * it should be checked that the element, pointed to by the iterator, exists
 			 */
-			//if (it_l != d->end())			// if VectorList is not empty
-			//	if (it_v != it_l)
-			if (++it_v != it_l->end())		// currently here we are failing
+			if (it_l == d->end())			// if VectorList is an empty list
+				return;						//     we have nothing to do
+			// VectorList is not an empty list
+			if (++it_v != it_l->end())
 				return;
-			// что если it_l пустой ???
 			if (++it_l != d->end()) {
 				it_v = it_l->begin();
 				return;
@@ -118,6 +119,8 @@ public:
 		}
 
 		void dec() {
+			if (it_l == d->end())			// if VectorList is an empty list
+				return;						//     we have nothing to do
 			if (it_v != it_l->begin()) {
 				it_v--;
 				return;
@@ -129,7 +132,6 @@ public:
 			}
 			return;
 		}
-
 	};
 
 	// TBD: begin - end
@@ -152,6 +154,9 @@ public:
 
 	// TBD: const_reverse_iterator
 	/*... const_reverse_iterator ...*/
+	struct const_reverse_iterator : public VectorList_const_iterator {
+	};
+
 
 	// TBD: rbegin - rend
 	/*const_reverse_iterator rbegin() const { return ...; }*/

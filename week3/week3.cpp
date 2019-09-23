@@ -103,8 +103,8 @@ void vectorList_test() {
 		std::cout << "Size is " << v_size << std::endl;
 		//std::cout << "begin is " << *i << std::endl;									// I don't know if I need to allow this for vlist having empty vector
 		std::cout << "std::distance(begin,end) " << d << std::endl;
-		std::cout << "*(++begin) == 'B'? " << (*++vlist.begin() == 'B') << std::endl;
-		std::cout << "*(++begin) == 'A'? " << (*++vlist.begin() == 'A') << std::endl;
+		//std::cout << "*(++begin) == 'B'? " << (*++vlist.begin() == 'B') << std::endl;
+		//std::cout << "*(++begin) == 'A'? " << (*++vlist.begin() == 'A') << std::endl;
 		std::cout << std::endl;
 	}
 
@@ -125,7 +125,6 @@ void vectorList_test() {
 	vlist.append(v2.begin(), v2.end());
 	vlist.append(v3.begin(), v3.end());	// v3 не будет добавлен, поскольку пустой
 
-	
 	auto v_size = vlist.size();
 	auto i = vlist.begin();
 	auto d = std::distance(vlist.begin(), vlist.end());
@@ -137,36 +136,23 @@ void vectorList_test() {
 	std::cout << "*(++begin) == 'A'? " << (*++vlist.begin() == 'A') << std::endl;
 	std::cout << std::endl;
 
-
-	/*std::cout << "Test ++i" << std::endl;
+	std::cout << "Test ++i" << std::endl;
 	for (i = vlist.begin(); i != vlist.end(); ++i)
 		std::cout << *i << " ";
-	std::cout << std::endl;
-	std::cout << std::endl;
-
-	std::cout << "Test i++" << std::endl;
+	std::cout << std::endl << "Test i++" << std::endl;
 	for (i = vlist.begin(); i != vlist.end(); i++)
 		std::cout << *i << " ";
-	std::cout << std::endl;
-	std::cout << std::endl;
-
-	std::cout << "Test --i" << std::endl;
+	std::cout << std::endl << "Test --i" << std::endl;
 	for (i = vlist.end(); i != vlist.begin();)
 		std::cout << *--i << " ";
-	std::cout << std::endl;
-	std::cout << std::endl;
-
-	std::cout << "Test i--" << std::endl;
+	std::cout << std::endl << "Test i--" << std::endl;
 	for (i = vlist.end(); i != vlist.begin();) {
 		i--;
 		std::cout << *i << " ";
 	}
-	std::cout << std::endl;
-	std::cout << std::endl;
+	std::cout << std::endl << std::endl;
 
-
-	std::cout << std::endl;
-	auto j = vlist.rbegin();
+	/*auto j = vlist.rbegin();
 	std::cout << "rbegin is " << *j << std::endl;
 	j = --vlist.rend();
 	std::cout << "--rend is " << *j << std::endl;
@@ -174,9 +160,8 @@ void vectorList_test() {
 	std::cout << "Test reverse_const_iterator ++" << std::endl;
 	for (j = vlist.rbegin(); j != vlist.rend(); ++j)
 		std::cout << *j << " ";
-	std::cout << std::endl;
+	std::cout << std::endl;*/
 
-	system("pause");*/
 	return;
 }
 
