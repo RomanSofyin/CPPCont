@@ -152,7 +152,7 @@ void vectorList_test() {
 	}
 	std::cout << std::endl << std::endl;
 
-	/*auto j = vlist.rbegin();
+	auto j = vlist.rbegin();
 	std::cout << "rbegin is " << *j << std::endl;
 	j = --vlist.rend();
 	std::cout << "--rend is " << *j << std::endl;
@@ -160,7 +160,7 @@ void vectorList_test() {
 	std::cout << "Test reverse_const_iterator ++" << std::endl;
 	for (j = vlist.rbegin(); j != vlist.rend(); ++j)
 		std::cout << *j << " ";
-	std::cout << std::endl;*/
+	std::cout << std::endl;
 
 	return;
 }

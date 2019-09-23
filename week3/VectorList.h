@@ -95,7 +95,7 @@ public:
 			return old;				// return old value
 		}
 	private:
-		const		ListT *					d;		// poiter to an instance of list<vector<T>> (aka ListT);					can't be NULL because VectorList() initializes VectorList::data_ with list<>();
+					const ListT*			d;		// poiter to an instance of list<vector<T>> (aka ListT);					can't be NULL because VectorList() initializes VectorList::data_ with list<>();
 		typename	ListT::const_iterator	it_l;	// *iterator* to an element of list<vector<T>>	which type is vector<T>;	can't be NULL because d can't be NULL; in case of empty *d, it is d->end() ( <==> d->begin() )
 		typename	VectT::const_iterator	it_v;	// *iterator* to an element of vector<T>		which type is T;			can   be NULL when *d is empty
 
@@ -134,7 +134,6 @@ public:
 		}
 	};
 
-	// TBD: begin - end
 	const_iterator begin() const {
 		typename VectT::const_iterator const_it_v;					// aka std::_Vector_const_iterator, pointing to a T; *default constructor gets called here - VectT::const_iterator()
 		typename ListT::const_iterator const_it_l = data_.begin();	// aka std::_List_const_iterator, pointing to a vector
@@ -152,15 +151,106 @@ public:
 		return const_iterator(&this->data_, const_it_l, const_it_v);
 	}
 
-	// TBD: const_reverse_iterator
-	/*... const_reverse_iterator ...*/
 	struct const_reverse_iterator : public VectorList_const_iterator {
+		const_reverse_iterator() = default;
+		const_reverse_iterator(const const_reverse_iterator&) = default;
+		const_reverse_iterator(
+			const ListT* d,
+			typename ListT::const_reverse_iterator rit_l,
+			typename VectT::const_reverse_iterator rit_v
+		) : d(d), rit_l(rit_l), rit_v(rit_v)
+		{}
+		~const_reverse_iterator() = default;
+		/* = = = = = =  = = = = = = =  = = = = = = = = = = =  = = = = = = = = = = = = = = = = = = = = */
+		const_reverse_iterator& operator=(const const_reverse_iterator&) = default;
+		
+		bool operator==(const const_reverse_iterator& rhs) {
+			bool b = (d == rhs.d) && (rit_l == rhs.rit_l) && (rit_v == rhs.rit_v);
+			return b;
+		}
+		bool operator!=(const const_reverse_iterator& rhs) {
+			return !operator==(rhs);
+		}
+
+		typename VectorList_const_iterator::reference operator*() {
+			return *rit_v;
+		}
+
+		const_reverse_iterator& operator++() {
+			rinc();
+			return *this;
+		}
+		const_reverse_iterator operator++(int) {
+			auto old(*this);		// copy old value
+			this->operator++();		// pre-increment
+			return old;				// return old value
+		}
+
+		typename VectorList_const_iterator::pointer operator->() const {
+			return &(*rit_v);	// the same as "return &it_v.operator*()"
+		}
+
+		const_reverse_iterator& operator--() {
+			rdec();
+			return *this;
+		}
+		const_reverse_iterator operator--(int) {
+			auto old(*this);		// copy old value
+			this->operator--();		// pre-increment
+			return old;				// return old value
+		}
+	private:
+		const ListT* d;
+		typename ListT::const_reverse_iterator rit_l;
+		typename VectT::const_reverse_iterator rit_v;
+
+		void rinc() {
+			if (rit_l == d->rend())			// if VectorList is an empty list
+				return;						//     we have nothing to do
+			// VectorList is not an empty list
+			if (++rit_v != rit_l->rend())
+				return;
+			if (++rit_l != d->rend()) {
+				rit_v = rit_l->rbegin();
+				return;
+			}
+			--rit_l;
+			rit_v = rit_l->rend();
+		}
+
+		void rdec() {
+			if (rit_l == d->rend())			// if VectorList is an empty list
+				return;						//     we have nothing to do
+			if (rit_v != rit_l->rbegin()) {
+				rit_v--;
+				return;
+			}
+			if (rit_l != d->rbegin()) {
+				rit_l--;
+				rit_v = --(rit_l->rend());
+				return;
+			}
+			return;
+		}
 	};
 
+	const_reverse_iterator rbegin() const {
+		typename VectT::const_reverse_iterator const_rit_v;
+		typename ListT::const_reverse_iterator const_rit_l = data_.rbegin();
+		if (const_rit_l != data_.rend()) {
+			const_rit_v = const_rit_l->rbegin();
+		}
+		return const_reverse_iterator(&data_, const_rit_l, const_rit_v);
+	}
 
-	// TBD: rbegin - rend
-	/*const_reverse_iterator rbegin() const { return ...; }*/
-	/*const_reverse_iterator rend()   const { return ...; }*/
+	const_reverse_iterator rend() const {
+		typename VectT::const_reverse_iterator const_rit_v;
+		typename ListT::const_reverse_iterator const_rit_l = data_.rend();
+		if (const_rit_l != data_.rbegin()) {
+			const_rit_v = (--const_rit_l)->rend();
+		}
+		return const_reverse_iterator(&data_, const_rit_l, const_rit_v);
+	}
 
 private:
 	ListT data_;
