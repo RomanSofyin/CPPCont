@@ -162,8 +162,13 @@ void vectorList_test() {
 		std::cout << *j << " ";
 	std::cout << std::endl;
 
-	typename VectorList<char>::const_iterator it = vlist.begin();
-	typename VectorList<char>::const_reverse_iterator rit(it);
+	typename VectorList<char>::const_iterator it1 = vlist.begin();
+	typename VectorList<char>::const_reverse_iterator rit(it1);
+	typename VectorList<char>::const_iterator it2 = rit.base();
+	if (it1 == it2)
+		std::cout << "base() works fine" << std::endl;
+	else
+		std::cout << "base() doesn't work as expected" << std::endl;
 
 	return;
 }

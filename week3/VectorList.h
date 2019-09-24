@@ -166,6 +166,12 @@ public:
 				typename ListT::const_reverse_iterator(it.it_l),
 				typename VectT::const_reverse_iterator(it.it_v));
 		}
+		const_iterator base() const {
+			return const_iterator(d,
+				rit_l.base(),
+				rit_v.base()
+			);
+		}
 		~const_reverse_iterator() = default;
 
 		const_reverse_iterator& operator=(const const_reverse_iterator&) = default;
