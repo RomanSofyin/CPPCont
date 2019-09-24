@@ -161,10 +161,7 @@ public:
 		) : d(d), rit_l(rit_l), rit_v(rit_v)
 		{}
 		const_reverse_iterator(const_iterator & it) {
-			const_reverse_iterator(
-				it.d,
-				typename ListT::const_reverse_iterator(it.it_l),
-				typename VectT::const_reverse_iterator(it.it_v));
+			const_reverse_iterator(it.d, typename ListT::const_reverse_iterator(it.it_l), typename VectT::const_reverse_iterator(it.it_v));
 		}
 		~const_reverse_iterator() = default;
 

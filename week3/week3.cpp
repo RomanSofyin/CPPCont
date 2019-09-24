@@ -162,6 +162,9 @@ void vectorList_test() {
 		std::cout << *j << " ";
 	std::cout << std::endl;
 
+	typename VectorList<char>::const_iterator it = vlist.begin();
+	typename VectorList<char>::const_reverse_iterator rit(it);
+
 	return;
 }
 
