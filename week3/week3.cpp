@@ -161,7 +161,7 @@ void vectorList_test() {
 	for (j = vlist.rbegin(); j != vlist.rend(); ++j)
 		std::cout << *j << " ";
 	std::cout << std::endl;
-
+	// base() check
 	typename VectorList<char>::const_iterator it1 = vlist.begin();
 	typename VectorList<char>::const_reverse_iterator rit(it1);
 	typename VectorList<char>::const_iterator it2 = rit.base();

@@ -28,7 +28,7 @@ public:
 	size_t size() const
 	{
 		size_t n = 0;
-		for (VectT v : data_) {
+		for (const VectT& v : data_) {
 			n += v.size();
 		}
 		return n;
@@ -56,15 +56,15 @@ public:
 
 		const_iterator& operator=(const const_iterator&) = default;
 		
-		bool operator==(const const_iterator& rhs) {
+		bool operator==(const const_iterator& rhs) const {
 			bool b = (d == rhs.d) && (it_l == rhs.it_l) && (it_v == rhs.it_v);
 			return b;
 		}
-		bool operator!=(const const_iterator& rhs) {
+		bool operator!=(const const_iterator& rhs) const {
 			return !operator==(rhs);
 		}
 
-		typename VectorList_const_iterator::reference operator*() {
+		typename VectorList_const_iterator::reference operator*() const {
 			// I don't know if I need to allow this for vlist having NULL vector (result of VectT::const_iterator())
 			return *it_v;
 		}
@@ -161,10 +161,9 @@ public:
 		) : d(d), rit_l(rit_l), rit_v(rit_v)
 		{}
 		const_reverse_iterator(const_iterator & it) {
-			const_reverse_iterator(
-				it.d,
-				typename ListT::const_reverse_iterator(it.it_l),
-				typename VectT::const_reverse_iterator(it.it_v));
+			d = it.d;
+			rit_l = ListT::const_reverse_iterator(it.it_l);
+			rit_v = VectT::const_reverse_iterator(it.it_v);
 		}
 		const_iterator base() const {
 			return const_iterator(d,
@@ -176,15 +175,15 @@ public:
 
 		const_reverse_iterator& operator=(const const_reverse_iterator&) = default;
 		
-		bool operator==(const const_reverse_iterator& rhs) {
+		bool operator==(const const_reverse_iterator& rhs) const {
 			bool b = (d == rhs.d) && (rit_l == rhs.rit_l) && (rit_v == rhs.rit_v);
 			return b;
 		}
-		bool operator!=(const const_reverse_iterator& rhs) {
+		bool operator!=(const const_reverse_iterator& rhs) const {
 			return !operator==(rhs);
 		}
 
-		typename VectorList_const_iterator::reference operator*() {
+		typename VectorList_const_iterator::reference operator*() const {
 			return *rit_v;
 		}
 
