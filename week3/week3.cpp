@@ -173,6 +173,25 @@ void vectorList_test() {
 	return;
 }
 
+void algorithms_demo() {
+	std::vector<int> v = { 2,3,5,7,13,17,19 };
+	size_t c = count_if(v.begin(), v.end(),
+		[](int x) {return x % 2 == 0; });
+	auto it1 = lower_bound(v.begin(), v.end(), 11);
+	bool has7 = binary_search(v.begin(), v.end(), 7);
+
+	std::vector<std::string> db;
+	db.push_back("qwe"); db.push_back("qew"); db.push_back("ewq");
+	db.push_back("weq"); db.push_back("eqw"); db.push_back("wqe");
+	db.push_back("Waldo"); db.push_back("Bob");
+	for_each(db.begin(), db.begin() + db.size() / 2,
+		[](std::string & s) {std::cout << s << "\n"; });
+	auto w = find(db.begin(), db.end(), "Waldo");
+	std::string agents[3] = { "Alice", "Bob", "Eve" };
+	auto it2 = find_first_of(db.begin(), db.end(),
+		agents, agents + 3);
+}
+
 int main()
 {
 	listDemo();
@@ -249,4 +268,6 @@ int main()
 	rangeClass_demo();
 
 	vectorList_test();
+
+	algorithms_demo();
 }
