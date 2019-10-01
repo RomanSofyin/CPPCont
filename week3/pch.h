@@ -11,6 +11,7 @@
 #include <iostream>
 #include <list>
 #include <algorithm>
+#include <numeric>
 #include <cstddef>
 #include <string>
 #include <map>

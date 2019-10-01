@@ -174,22 +174,66 @@ void vectorList_test() {
 }
 
 void algorithms_demo() {
-	std::vector<int> v = { 2,3,5,7,13,17,19 };
-	size_t c = count_if(v.begin(), v.end(),
-		[](int x) {return x % 2 == 0; });
-	auto it1 = lower_bound(v.begin(), v.end(), 11);
-	bool has7 = binary_search(v.begin(), v.end(), 7);
+	{
+		std::vector<int> v = { 2,3,5,7,13,17,19 };
+		size_t c = count_if(v.begin(), v.end(),
+			[](int x) {return x % 2 == 0; });
+		auto it1 = lower_bound(v.begin(), v.end(), 11);
+		bool has7 = binary_search(v.begin(), v.end(), 7);
 
-	std::vector<std::string> db;
-	db.push_back("qwe"); db.push_back("qew"); db.push_back("ewq");
-	db.push_back("weq"); db.push_back("eqw"); db.push_back("wqe");
-	db.push_back("Waldo"); db.push_back("Bob");
-	for_each(db.begin(), db.begin() + db.size() / 2,
-		[](std::string & s) {std::cout << s << "\n"; });
-	auto w = find(db.begin(), db.end(), "Waldo");
-	std::string agents[3] = { "Alice", "Bob", "Eve" };
-	auto it2 = find_first_of(db.begin(), db.end(),
-		agents, agents + 3);
+		std::vector<std::string> db;
+		db.push_back("qwe"); db.push_back("qew"); db.push_back("ewq");
+		db.push_back("weq"); db.push_back("eqw"); db.push_back("wqe");
+		db.push_back("Waldo"); db.push_back("Bob");
+		for_each(db.begin(), db.begin() + db.size() / 2,
+			[](std::string & s) {std::cout << s << "\n"; });
+		auto w = find(db.begin(), db.end(), "Waldo");
+		std::string agents[3] = { "Alice", "Bob", "Eve" };
+		auto it2 = find_first_of(db.begin(), db.end(),
+			agents, agents + 3);
+	}
+
+	{
+		// случайныe
+		std::vector<int> a(100);
+		generate(a.begin(), a.end(), []() {return rand() % 100; });
+		// 0,1,2,3,...
+		std::vector<int> b(a.size());
+		iota(b.begin(), b.end(), 0);
+		// c[i] = a[i] * b[i]
+		std::vector<int> c(b.size());
+		transform(
+			a.begin(), a.end(),						// границы послед-ти, содержащей первые операнды для функтора multiplies
+			b.begin(),								// начало  послед-ти, содержащей вторые операнды для функтора multiplies
+			c.begin(),								// начало  послед-ти, в которую положим рез-т        функтора multiplies
+			std::multiplies<int>());				// функтор-операция, которую выполняем над эл-ами последовательностей, содержащих операнды
+		// c[i] *= 2
+		transform(
+			c.begin(), c.end(),						// границы послед-ти, содержащей первые (и единственные) операнды функтора
+			c.begin(),								// начало  послед-ти, в которую положим рез-т функтора
+			[](int x) {return x * 2; }				// функтор-операция
+		);
+		// сумма c[i]
+		int sum = accumulate(c.begin(), c.end(), 0);
+	}
+
+	{
+		std::vector<int> v1 = { 2,5,1,5,8,5,2,5,8 };
+		remove(v1.begin(), v1.end(), 5);				// v.size() не изменится, v = {2,1,8,2,8,5,2,5,8}
+		// удаление элемента по значению
+		std::vector<int> v2 = { 2,5,1,5,8,5,2,5,8 };
+		v2.erase(remove(v2.begin(), v2.end(), 5), v2.end());
+		// для std::list можно так
+		std::list<int> l1 = { 2,5,1,5,8,5,2,5,8 };
+		l1.remove(5);
+		
+		// Удаление одинаковых элементов
+		std::vector<int> v3 = { 1,2,2,2,3,4,5,5,5,6,7,8,9 };
+		v3.erase(unique(v3.begin(), v3.end()), v3.end());
+		// для std::list можно так
+		std::list<int> l2 = { 1,2,2,2,3,4,5,5,5,6,7,8,9 };
+		l2.unique();
+	}
 }
 
 int main()
