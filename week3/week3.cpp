@@ -234,6 +234,21 @@ void algorithms_demo() {
 		std::list<int> l2 = { 1,2,2,2,3,4,5,5,5,6,7,8,9 };
 		l2.unique();
 	}
+
+	// Удаление из ассоциативных контейнеров
+	{
+		// так не нужно делать
+		std::map<std::string, int> m;
+		for (auto it = m.begin(); it != m.end(); ++it)
+			if (it->second == 0)
+				m.erase(it);		// 'it' gets invalidated here, so ++it leads to unpredictable  behaviour
+		// нужно делать так
+		for (auto it = m.begin(); it != m.end(); )
+			if (it->second == 0)
+				it = m.erase(it);	// альтернативный вариант: m.erase(it++)
+			else
+				++it;
+	}
 }
 
 int main()
