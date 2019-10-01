@@ -251,6 +251,69 @@ void algorithms_demo() {
 	}
 }
 
+// алгоритм должен работать с forward итераторами
+// и возвращать итератор, который потом будет передан
+// в метод erase соответствующего контейнера
+template<class FwdIt>
+FwdIt remove_nth(FwdIt p, FwdIt q, size_t n)
+{
+	// std::vector<int> v = { 0,1,2,3,4,5,6,7,8,9,10 };
+	// auto newEndIt = remove_nth(v.begin(), v.end(), 5);
+	// v.erase(newEndIt, v.end());
+	// теперь в v = {0,1,2,3,4,6,7,8,9,10};
+	auto d = std::distance(p, q);
+	if (n >= d)
+		return q;
+	auto afterNIt = std::copy_n(p, n, p);
+	auto nIt = afterNIt++;
+	return std::copy(afterNIt, q, nIt);
+}
+
+void remove_nth_test() {
+	{
+		std::vector<int> v = { 0,1,2,3,4,5,6,7,8,9,10 };
+		v.erase(remove_nth(v.begin(), v.end(), 5), v.end());
+		// теперь в v = {0,1,2,3,4,6,7,8,9,10};
+	}
+	{
+		std::vector<int> v = { 0 };
+		v.erase(remove_nth(v.begin(), v.end(), 5), v.end());
+		// теперь в v = {0};
+	}
+	{
+		std::vector<int> v = { 0 };
+		v.erase(remove_nth(v.begin(), v.end(), 0), v.end());
+		// теперь в v = {0};
+	}
+	{
+		std::vector<int> v = {};
+		v.erase(remove_nth(v.begin(), v.end(), 0), v.end());
+		// теперь в v = {};
+	}
+}
+
+struct ElementN
+{
+	explicit ElementN(size_t n)
+		: n(n), i(0)
+	{}
+	template<class T>
+	bool operator()(T const& t) { return (i++ == n); }
+	size_t n;
+	size_t i;
+};
+template<class Iterator, class Pred>
+Iterator remove_if_(Iterator p, Iterator q, Pred pred)
+{
+	Iterator s = find_if(p, q, pred);
+	if (s == q)
+		return q;
+
+	Iterator out = s;
+	++s;
+	return remove_copy_if(s, q, out, pred);
+}
+
 int main()
 {
 	listDemo();
@@ -329,4 +392,13 @@ int main()
 	vectorList_test();
 
 	algorithms_demo();
+
+	remove_nth_test();
+
+	{
+		std::vector<int> v = { 0,1,2,3,4,5,6,7,8,9,10,11,12 };
+		v.erase(remove_if_(v.begin(), v.end(), ElementN(3)), v.end());
+		for (int i : v)
+			std::cout << i << ' ';
+	}
 }
