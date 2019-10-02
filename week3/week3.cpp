@@ -358,6 +358,19 @@ void elementNi_test() {
 	}
 }
 
+void sort_demo() {
+	// найти медиану - средний элемент в массиве
+	std::vector<int> v = { 5,8,3,4,8,5,6,7,1,2,3,1,0,9,4,5,8,7,4 };
+	auto med = v.begin() + v.size() / 2;
+	nth_element(v.begin(), med, v.end());
+	std::cout << "Median: " << *med;
+	// разбить элементы массива на чётные и нечётные, отсортировать чётную часть, удалить нечётные эл-ты
+	auto m = partition(v.begin(), v.end(),
+		[](int x) {return x % 2 == 0; });
+	sort(v.begin(), m);
+	v.erase(m, v.end());
+}
+
 int main()
 {
 	listDemo();
@@ -448,4 +461,6 @@ int main()
 	}
 
 	elementNi_test();
+
+	sort_demo();
 }
