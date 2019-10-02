@@ -322,7 +322,8 @@ void elementNi_test() {
 		v1.erase(remove_if(v1.begin(), v1.end(), e), v1.end()); for (int i : v1) std::cout << i << ' '; std::cout << std::endl;	// " "
 		v2.erase(remove_if(v2.begin(), v2.end(), e), v2.end()); for (int i : v2) std::cout << i << ' '; std::cout << std::endl;	// " "
 	}
-	//{
+	// runtime error
+	//{ 
 	//	std::cout << "ElementN3 test:\n";
 	//	std::vector<int> v1 = { 0,1,2,3,4,5,6,7,8,9,10,11,12 };
 	//	std::vector<int> v2 = { 0,1,2,3,4,5,6,7,8,9,10,11,12 };
@@ -338,6 +339,7 @@ void elementNi_test() {
 		v1.erase(remove_if(v1.begin(), v1.end(), e), v1.end()); for (int i : v1) std::cout << i << ' '; std::cout << std::endl;	// " "
 		v2.erase(remove_if(v2.begin(), v2.end(), e), v2.end()); for (int i : v2) std::cout << i << ' '; std::cout << std::endl;	// " "
 	}
+	// compile time error
 	//{
 	//	std::cout << "ElementN5 test:\n";
 	//	std::vector<int> v1 = { 0,1,2,3,4,5,6,7,8,9,10,11,12 };
