@@ -20,5 +20,6 @@
 #include <iterator>
 #include <vector>
 #include <fstream>
+#include <memory>
 
 #endif //PCH_H

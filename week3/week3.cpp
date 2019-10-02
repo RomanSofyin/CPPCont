@@ -6,6 +6,7 @@
 #include "Multimethod2.h"
 #include "VectorList.h"
 #include "Range.h"
+#include "ElementN.h"
 
 // std::list demo
 void listDemo() {
@@ -292,16 +293,6 @@ void remove_nth_test() {
 	}
 }
 
-struct ElementN
-{
-	explicit ElementN(size_t n)
-		: n(n), i(0)
-	{}
-	template<class T>
-	bool operator()(T const& t) { return (i++ == n); }
-	size_t n;
-	size_t i;
-};
 template<class Iterator, class Pred>
 Iterator remove_if_(Iterator p, Iterator q, Pred pred)
 {
@@ -312,6 +303,57 @@ Iterator remove_if_(Iterator p, Iterator q, Pred pred)
 	Iterator out = s;
 	++s;
 	return remove_copy_if(s, q, out, pred);
+}
+
+void elementNi_test() {
+	{
+		std::cout << "ElementN1 test:\n";
+		std::vector<int> v1 = { 0,1,2,3,4,5,6,7,8,9,10,11,12 };
+		std::vector<int> v2 = { 0,1,2,3,4,5,6,7,8,9,10,11,12 };
+		auto e = ElementN1(3);
+		v1.erase(remove_if(v1.begin(), v1.end(), e), v1.end()); for (int i : v1) std::cout << i << ' '; std::cout << std::endl;	// " "
+		v2.erase(remove_if(v2.begin(), v2.end(), e), v2.end()); for (int i : v2) std::cout << i << ' '; std::cout << std::endl;	// " "
+	}
+	{
+		std::cout << "ElementN2 test:\n";
+		std::vector<int> v1 = { 0,1,2,3,4,5,6,7,8,9,10,11,12 };
+		std::vector<int> v2 = { 0,1,2,3,4,5,6,7,8,9,10,11,12 };
+		auto e = ElementN2(3);
+		v1.erase(remove_if(v1.begin(), v1.end(), e), v1.end()); for (int i : v1) std::cout << i << ' '; std::cout << std::endl;	// " "
+		v2.erase(remove_if(v2.begin(), v2.end(), e), v2.end()); for (int i : v2) std::cout << i << ' '; std::cout << std::endl;	// " "
+	}
+	//{
+	//	std::cout << "ElementN3 test:\n";
+	//	std::vector<int> v1 = { 0,1,2,3,4,5,6,7,8,9,10,11,12 };
+	//	std::vector<int> v2 = { 0,1,2,3,4,5,6,7,8,9,10,11,12 };
+	//	auto e = ElementN3(3);
+	//	v1.erase(remove_if(v1.begin(), v1.end(), e), v1.end()); for (int i : v1) std::cout << i << ' '; std::cout << std::endl;	// " "
+	//	v2.erase(remove_if(v2.begin(), v2.end(), e), v2.end()); for (int i : v2) std::cout << i << ' '; std::cout << std::endl;	// " "
+	//}
+	{
+		std::cout << "ElementN4 test:\n";
+		std::vector<int> v1 = { 0,1,2,3,4,5,6,7,8,9,10,11,12 };
+		std::vector<int> v2 = { 0,1,2,3,4,5,6,7,8,9,10,11,12 };
+		auto e = ElementN4(3);
+		v1.erase(remove_if(v1.begin(), v1.end(), e), v1.end()); for (int i : v1) std::cout << i << ' '; std::cout << std::endl;	// " "
+		v2.erase(remove_if(v2.begin(), v2.end(), e), v2.end()); for (int i : v2) std::cout << i << ' '; std::cout << std::endl;	// " "
+	}
+	//{
+	//	std::cout << "ElementN5 test:\n";
+	//	std::vector<int> v1 = { 0,1,2,3,4,5,6,7,8,9,10,11,12 };
+	//	std::vector<int> v2 = { 0,1,2,3,4,5,6,7,8,9,10,11,12 };
+	//	auto e = ElementN5(3);
+	//	v1.erase(remove_if(v1.begin(), v1.end(), e), v1.end()); for (int i : v1) std::cout << i << ' '; std::cout << std::endl;	// " "
+	//	v2.erase(remove_if(v2.begin(), v2.end(), e), v2.end()); for (int i : v2) std::cout << i << ' '; std::cout << std::endl;	// " "
+	//}
+	{
+		std::cout << "ElementN6 test:\n";
+		std::vector<int> v1 = { 0,1,2,3,4,5,6,7,8,9,10,11,12 };
+		std::vector<int> v2 = { 0,1,2,3,4,5,6,7,8,9,10,11,12 };
+		auto e = ElementN6(3);
+		v1.erase(remove_if(v1.begin(), v1.end(), e), v1.end()); for (int i : v1) std::cout << i << ' '; std::cout << std::endl;	// " "
+		v2.erase(remove_if(v2.begin(), v2.end(), e), v2.end()); for (int i : v2) std::cout << i << ' '; std::cout << std::endl;	// " "
+	}
 }
 
 int main()
@@ -397,8 +439,11 @@ int main()
 
 	{
 		std::vector<int> v = { 0,1,2,3,4,5,6,7,8,9,10,11,12 };
-		v.erase(remove_if_(v.begin(), v.end(), ElementN(3)), v.end());
-		for (int i : v)
+		v.erase(remove_if_(v.begin(), v.end(), ElementN1(3)), v.end());
+		for (int i : v)				// "0 1 2 4 5 6 8 9 10 11 12 "
 			std::cout << i << ' ';
+		std::cout << std::endl;
 	}
+
+	elementNi_test();
 }

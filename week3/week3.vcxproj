@@ -160,6 +160,7 @@
     <ClCompile Include="week3.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ElementN.h" />
     <ClInclude Include="Multimethod2.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Range.h" />
