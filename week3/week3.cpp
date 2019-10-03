@@ -262,7 +262,7 @@ FwdIt remove_nth(FwdIt p, FwdIt q, size_t n)
 	// auto newEndIt = remove_nth(v.begin(), v.end(), 5);
 	// v.erase(newEndIt, v.end());
 	// теперь в v = {0,1,2,3,4,6,7,8,9,10};
-	auto d = std::distance(p, q);
+	size_t d = std::distance(p, q);
 	if (n >= d)
 		return q;
 	auto afterNIt = std::copy_n(p, n, p);
@@ -371,6 +371,31 @@ void sort_demo() {
 	v.erase(m, v.end());
 }
 
+// Шаблонная функция count_permutations, которая принимает некоторую последовательность
+// и вычисляет количество перестановок этой последовательности (равные последовательности
+// считаются одной перестановкой), в которых нет подряд идущих одинаковых элементов.
+//
+// Три способа добраться до типа T, на который указывает итератор p:
+//  1. using T = typename std::iterator_traits<Iterator>::value_type; - более универсален, т.к. не требует наличие экземпляря итератора
+//  2. using T = typename std::decay<decltype (*p)>::type;
+//  3. auto x = *p; using T = decltype (x);
+template<class Iterator>
+size_t count_permutations(Iterator p, Iterator q)
+{
+	using T = typename std::iterator_traits<Iterator>::value_type;
+	std::vector<T> v(p, q);
+	auto vp = v.begin();
+	auto vq = v.end();
+	sort(vp, vq);
+	std::vector<decltype(v)> vv;
+	do {
+		vv.push_back(std::vector<T>(vp, vq));
+	} while (next_permutation(vp, vq));
+	sort(vv.begin(), vv.end());
+	vv.erase(unique(vv.begin(), vv.end()), vv.end());
+	return vv.size();
+}
+
 int main()
 {
 	listDemo();
@@ -463,4 +488,11 @@ int main()
 	elementNi_test();
 
 	sort_demo();
+
+	std::array<int, 3> a1 = { 1,2,3 };
+	size_t c1 = count_permutations(a1.begin(), a1.end()); // 6
+	std::array<int, 3> a2 = { 1,2,2 };
+	size_t c2 = count_permutations(a2.begin(), a2.end()); // ?
+	std::array<int, 5> a3 = { 1,2,3,4,4 };
+	size_t c3 = count_permutations(a3.begin(), a3.end()); // 36
 }

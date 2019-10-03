@@ -21,5 +21,6 @@
 #include <vector>
 #include <fstream>
 #include <memory>
+#include <array>
 
 #endif //PCH_H
