@@ -379,6 +379,9 @@ void sort_demo() {
 //  1. using T = typename std::iterator_traits<Iterator>::value_type; - более универсален, т.к. не требует наличие экземпляря итератора
 //  2. using T = typename std::decay<decltype (*p)>::type;
 //  3. auto x = *p; using T = decltype (x);
+//
+// ToDo: реализовать идею, описанную в комментарии по ссылке ниже
+//  - https://stepik.org/lesson/53379/step/14?discussion=482381&reply=482851&unit=31454
 template<class Iterator>
 size_t count_permutations(Iterator p, Iterator q)
 {
@@ -387,13 +390,12 @@ size_t count_permutations(Iterator p, Iterator q)
 	auto vp = v.begin();
 	auto vq = v.end();
 	sort(vp, vq);
-	std::vector<decltype(v)> vv;
+	size_t res = 0;
 	do {
-		vv.push_back(std::vector<T>(vp, vq));
+		if (adjacent_find(vp, vq) == v.end())
+			res++;
 	} while (next_permutation(vp, vq));
-	sort(vv.begin(), vv.end());
-	vv.erase(unique(vv.begin(), vv.end()), vv.end());
-	return vv.size();
+	return res;
 }
 
 int main()
