@@ -494,7 +494,7 @@ int main()
 	std::array<int, 3> a1 = { 1,2,3 };
 	size_t c1 = count_permutations(a1.begin(), a1.end()); // 6
 	std::array<int, 3> a2 = { 1,2,2 };
-	size_t c2 = count_permutations(a2.begin(), a2.end()); // ?
+	size_t c2 = count_permutations(a2.begin(), a2.end()); // 1
 	std::array<int, 5> a3 = { 1,2,3,4,4 };
 	size_t c3 = count_permutations(a3.begin(), a3.end()); // 36
 }
