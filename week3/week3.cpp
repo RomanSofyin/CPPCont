@@ -1,7 +1,4 @@
-﻿// week3.cpp : This file contains the 'main' function. Program execution begins and ends there.
-//
-
-#include "pch.h"
+﻿#include "pch.h"
 #include "Shape.h"
 #include "Multimethod2.h"
 #include "VectorList.h"
