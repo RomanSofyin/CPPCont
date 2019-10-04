@@ -11,6 +11,8 @@
 
 // TODO: add headers that you want to pre-compile here
 #include <exception>
+#include <iostream>
 #include <sstream>
+#include <ios>
 
 #endif //PCH_H

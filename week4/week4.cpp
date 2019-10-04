@@ -1,5 +1,4 @@
 #include "pch.h"
-#include <iostream>
 #include "bad_from_string.h"
 
 using namespace std;
@@ -9,6 +8,7 @@ T from_string(string const& s)
 {
 	T v;
 	istringstream iss(s);
+	iss.setf(std::ios_base::skipws);
 	iss >> v;
 	return v;
 }
