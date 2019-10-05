@@ -10,7 +10,7 @@ T from_string(string const& s)
     istringstream iss(s);
     iss.setf(std::ios_base::skipws);
     iss >> v;
-    if (stream.fail() || stream.peek() != EOF)
+    if (iss.fail() || iss.peek() != EOF)
         throw bad_from_string(s);
     return v;
 }
