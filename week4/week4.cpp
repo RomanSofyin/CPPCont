@@ -12,37 +12,29 @@ T from_string(string const& s)
 	iss >> v;
 	return v;
 }
+// Safe from string call
+#define _SFROM_STRING(type1)						\
+	try	{											\
+		cout << endl << "<" #type1 ">: ";			\
+		cout << from_string<type1>(str); }			\
+	catch (exception const& e) {					\
+		cout<<"catch std::exception: "<< e.what();	\
+	}												\
+	catch (...) {									\
+		cout<<"catch unknown";						\
+	}
+void from_string_test()
+{	
+	vector<string> strings{ "123", "12.3", "", " ", "abc", " 123", "123 ", "12 3", "-1", "a", "A" };
 
-void from_string_test() {
-	string s1("123");
-	int    a1 = from_string<int>(s1); // a1 = 123
-	double b1 = from_string<double>(s1); // b1 = 123.0
-	string c1 = from_string<string>(s1); // c1 = "123"
-
-	string s2("12.3");
-	try {
-		int    a2 = from_string<int>(s2); // исключение
+	for (auto& str : strings) {
+		cout << endl << "from_string(\'" << str << "\'):";
+		_SFROM_STRING(string);
+		_SFROM_STRING(double);
+		_SFROM_STRING(int);
+		_SFROM_STRING(char);
+		cout << endl;
 	}
-	catch (bad_from_string & e) {
-		cout << "An exception has been thrown by from_string<int>(s2)\n";
-	}
-	double b2 = from_string<double>(s2); // b2 = 12.3
-	string c2 = from_string<string>(s2); // c2 = "12.3"
-
-	string s3("abc");
-	try {
-		int    a3 = from_string<int>(s3); // исключение
-	}
-	catch (bad_from_string & e) {
-		cout << "An exception has been thrown by from_string<int>(s3)\n";
-	}
-	try {
-		double b3 = from_string<double>(s3); // исключение
-	}
-	catch (bad_from_string & e) {
-		cout << "An exception has been thrown by from_string<double>(s3)\n";
-	}
-	string c3 = from_string<string>(s3); // c3 = "abc"
 }
 
 int main()
