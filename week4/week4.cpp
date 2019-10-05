@@ -1,4 +1,4 @@
-#include "pch.h"
+п»ї#include "pch.h"
 #include "bad_from_string.h"
 
 using namespace std;
@@ -21,7 +21,7 @@ void from_string_test() {
 
 	string s2("12.3");
 	try {
-		int    a2 = from_string<int>(s2); // исключение
+		int    a2 = from_string<int>(s2); // РёСЃРєР»СЋС‡РµРЅРёРµ
 	}
 	catch (bad_from_string & e) {
 		cout << "An exception has been thrown by from_string<int>(s2)\n";
@@ -31,13 +31,13 @@ void from_string_test() {
 
 	string s3("abc");
 	try {
-		int    a3 = from_string<int>(s3); // исключение
+		int    a3 = from_string<int>(s3); // РёСЃРєР»СЋС‡РµРЅРёРµ
 	}
 	catch (bad_from_string & e) {
 		cout << "An exception has been thrown by from_string<int>(s3)\n";
 	}
 	try {
-		double b3 = from_string<double>(s3); // исключение
+		double b3 = from_string<double>(s3); // РёСЃРєР»СЋС‡РµРЅРёРµ
 	}
 	catch (bad_from_string & e) {
 		cout << "An exception has been thrown by from_string<double>(s3)\n";
