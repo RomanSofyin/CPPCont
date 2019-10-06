@@ -42,7 +42,38 @@ void from_string_test()
     }
 }
 
+template <class T1, class T2>
+struct pair {
+    void swap(pair& p) noexcept(
+        noexcept(std::swap(first, p.first)) && 
+        noexcept(std::swap(second, p.second))
+        )
+    {
+        std::swap(first, p.first);
+        std::swap(second, p.second);
+    }
+    T1 first;
+    T2 second;
+};
+
+// Обявить функцию do_math как noexcept если:
+// - конструктор копирования типа Т является noexcept И
+// - оператор присваивания   типа Т является noexcept И
+// - оператор сложения       типа Т является noexcept
+template<class T>
+void do_math() noexcept(
+    noexcept(T(declval<T&>())) &&
+    noexcept(declval<T&>() = declval<T&>()) &&
+    noexcept(declval<T&>() + declval<T&>())
+    )
+{
+    // we are doing some math here
+}
+
 int main()
 {
     from_string_test();
+
+    bool b1 = noexcept(do_math<int>()); // true
+    bool b2 = noexcept(do_math<std::string>()); // false
 }
