@@ -62,12 +62,29 @@ struct pair {
 // - оператор сложения       типа Т является noexcept
 template<class T>
 void do_math() noexcept(
-    noexcept(T(declval<T&>())) &&
-    noexcept(declval<T&>() = declval<T&>()) &&
-    noexcept(declval<T&>() + declval<T&>())
+    noexcept(T(declval<T&>())) &&                               // копирование
+    noexcept(declval<T&>() = declval<T&>()) &&                  // присваивание
+    noexcept(declval<T&>() + declval<T&>())                     // сложение
     )
 {
     // we are doing some math here
+}
+
+// внутри do_math2 объекты типа T
+// - копируются
+// - присваиваются
+// - перемещаются
+// - складываются оператором +
+template<class T>
+void do_math_() noexcept(
+    noexcept(T(std::declval<const T&>())) &&                    // копирование
+    noexcept(T(std::declval<T&&>())) &&                         // копирование с перемещением
+    noexcept(std::declval<T&>() = std::declval<const T&>()) &&  // присваивание
+    noexcept(std::declval<T&>() = std::declval<T&&>()) &&       // присваивание с перемещением
+    noexcept(std::declval<T&>() + std::declval<T&>())           // сложение
+    )
+{
+    // тело функции нужно оставить пустым
 }
 
 int main()
@@ -76,4 +93,7 @@ int main()
 
     bool b1 = noexcept(do_math<int>()); // true
     bool b2 = noexcept(do_math<std::string>()); // false
+
+    bool b1_ = noexcept(do_math_<int>()); // true
+    bool b2 = noexcept(do_math_<std::string>()); // false
 }
