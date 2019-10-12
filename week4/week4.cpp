@@ -70,7 +70,7 @@ void do_math() noexcept(
     // we are doing some math here
 }
 
-// внутри do_math2 объекты типа T
+// внутри do_math_ объекты типа T
 // - копируются
 // - присваиваются
 // - перемещаются
@@ -95,5 +95,5 @@ int main()
     bool b2 = noexcept(do_math<std::string>()); // false
 
     bool b1_ = noexcept(do_math_<int>()); // true
-    bool b2 = noexcept(do_math_<std::string>()); // false
+    bool b2_ = noexcept(do_math_<std::string>()); // false
 }
