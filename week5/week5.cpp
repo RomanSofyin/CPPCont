@@ -1,31 +1,48 @@
 #include "pch.h"
 #include <iostream>
 
+#define F1_RTYPE decltype(f1(*p))
+#define F2_RTYPE decltype(f2(f1(*p), f1(*p)))
 template <class It, class Fun1, class Fun2>
-auto map_reduce(It p, It q, Fun1 f1, Fun2 f2, size_t num) -> decltype(f1) {
-    // auto res = f1(*p);
-    // while (++p != q)
-    //     res = f2(res, f1(*p));
-    
-    auto res = f1(*p);
-    
-    std::vector<std::future<decltype(f1(*p))>> v;
+auto map_reduce(It p, It q, Fun1 f1, Fun2 f2, size_t num) -> F2_RTYPE
+{
+    auto thread = [](It p, It q, Fun1 f1, Fun2 f2)
+    {
+        auto res = f1(*p);
+        while (++p != q)
+            res = f2(res, f1(*p));
+        return res;
+    };
 
+    std::vector<std::future<F2_RTYPE>> v;
+    auto _p = p;
+    std::future<F2_RTYPE> fut;
 
-    for (size_t i = 0; i < num && p != q; i++) {
-        //std::future<int> fut = std::async(std::launch::async, map_reduce_mt, );
+    while (p != q)
+    {
+        if (std::distance(_p, ++p) == num)
+        {
+            fut = std::async(std::launch::async, thread, _p, p, f1, f2);
+            v.push_back(std::move(fut));
+            _p = p;
+        }
     }
-    
-    return res;
-    
-    // = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
-    std::function<int(int)> op = [](int x) {return x+1; };
-    std::future<int> fut = std::async(std::launch::async, op, 5);
-}
-template <class It, class Fun1, class Fun2>
-auto map_reduce_mt(It p, It q, Fun1 f1, Fun2 f2) -> decltype(f1(*p)) {
+    if (_p != p)
+    {
+        fut = std::async(std::launch::async, thread, _p, p, f1, f2);
+        v.push_back(std::move(fut));
+    }
 
+    F2_RTYPE res = F2_RTYPE();
+
+    for (decltype(fut) & _fut : v)
+    {
+        res = _fut.get();
+    }
+
+    return res;
 }
+
 
 int main()
 {
