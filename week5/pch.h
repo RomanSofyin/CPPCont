@@ -12,6 +12,7 @@
 // TODO: add headers that you want to pre-compile here
 #include <future>
 #include <list>
-#include <functional>
+#include <vector>
+//#include <functional>
 
 #endif //PCH_H

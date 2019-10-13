@@ -1,12 +1,11 @@
 #include "pch.h"
 #include <iostream>
 
-#define F1_RTYPE decltype(f1(*p))
-#define F2_RTYPE decltype(f2(f1(*p), f1(*p)))
+#define RTYPE decltype(f2(f1(*p), f1(*p)))
 template <class It, class Fun1, class Fun2>
-auto map_reduce(It p, It q, Fun1 f1, Fun2 f2, size_t num) -> F2_RTYPE
+auto map_reduce(It p, It q, Fun1 f1, Fun2 f2, size_t threads) -> RTYPE
 {
-    auto thread = [](It p, It q, Fun1 f1, Fun2 f2)
+    auto f_thread = [](It p, It q, Fun1 f1, Fun2 f2)
     {
         auto res = f1(*p);
         while (++p != q)
@@ -14,30 +13,29 @@ auto map_reduce(It p, It q, Fun1 f1, Fun2 f2, size_t num) -> F2_RTYPE
         return res;
     };
 
-    std::vector<std::future<F2_RTYPE>> v;
+    std::vector<std::future<RTYPE>> v;
     auto _p = p;
-    std::future<F2_RTYPE> fut;
+    std::future<RTYPE> fut;
+    size_t d = std::distance(p, q);
+    size_t n = d % threads == 0 ? d / threads : d / threads + 1;
 
     while (p != q)
     {
-        if (std::distance(_p, ++p) == num)
+        // Безопасно ли полагаться на то, что первое условие (std::distance(_p, ++p) == num) будет проверено первым?
+        // В данном коде порядок важен, поскольку проверка второго условия должна выполняться c инкрементированным значением 'p'.
+        if (std::distance(_p, ++p) == n || p == q)
         {
-            fut = std::async(std::launch::async, thread, _p, p, f1, f2);
+            fut = std::async(std::launch::async, f_thread, _p, p, f1, f2);
             v.push_back(std::move(fut));
             _p = p;
         }
     }
-    if (_p != p)
-    {
-        fut = std::async(std::launch::async, thread, _p, p, f1, f2);
-        v.push_back(std::move(fut));
-    }
 
-    F2_RTYPE res = F2_RTYPE();
+    RTYPE res = RTYPE();      // конструктор по умолчанию для типа RTYPE
 
     for (decltype(fut) & _fut : v)
     {
-        res = _fut.get();
+        res = f2(res, _fut.get());
     }
 
     return res;
@@ -46,7 +44,7 @@ auto map_reduce(It p, It q, Fun1 f1, Fun2 f2, size_t num) -> F2_RTYPE
 
 int main()
 {
-    std::list<int> l = { 1,2,3,4,5,6,7,8,9,10 };
+    std::list<int> l = { 1,2,3,4 };
     // параллельное суммирование в 3 потока
     auto sum = map_reduce(
         l.begin(), l.end(),         // начало, конец
