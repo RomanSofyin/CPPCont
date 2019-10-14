@@ -1,6 +1,9 @@
 ﻿#include "pch.h"
 #include <iostream>
 
+// Функция разбивает последовательность, заданную через итераторы 'p' и 'q' на 'threads' отрезков
+// и выполняет вычисления над элементами этих подпоследовательностей в 'threads' потоков.
+// Затем выполняется "объединение" результатов вычислений каждого потока.
 #define RTYPE decltype(f2(f1(*p), f1(*p)))
 template <class It, class Fun1, class Fun2>
 auto map_reduce(It p, It q, Fun1 f1, Fun2 f2, size_t threads) -> RTYPE
@@ -35,9 +38,7 @@ auto map_reduce(It p, It q, Fun1 f1, Fun2 f2, size_t threads) -> RTYPE
     RTYPE res = RTYPE();      // конструктор по умолчанию для типа F2_RTYPE
 
     for (decltype(fut) & _fut : v)
-    {
         res = f2(res, _fut.get());
-    }
 
     return res;
 }
