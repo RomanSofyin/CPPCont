@@ -1,4 +1,4 @@
-#include "pch.h"
+п»ї#include "pch.h"
 #include <iostream>
 
 #define RTYPE decltype(f2(f1(*p), f1(*p)))
@@ -14,24 +14,25 @@ auto map_reduce(It p, It q, Fun1 f1, Fun2 f2, size_t threads) -> RTYPE
     };
 
     std::vector<std::future<RTYPE>> v;
-    auto _p = p;
     std::future<RTYPE> fut;
-    size_t d = std::distance(p, q);
-    size_t n = d % threads == 0 ? d / threads : d / threads + 1;
+    auto _p = p;
+    size_t d       = std::distance(p, q);
+    size_t n_base  = d / threads;
+    size_t n_extra = d % threads;
 
-    while (p != q)
+    for (int k = 0; p != q; k++)
     {
-        // Безопасно ли полагаться на то, что первое условие (std::distance(_p, ++p) == num) будет проверено первым?
-        // В данном коде порядок важен, поскольку проверка второго условия должна выполняться c инкрементированным значением 'p'.
-        if (std::distance(_p, ++p) == n || p == q)
+        if (std::distance(_p, ++p) == (n_base + ( n_extra ? 1 : 0)))
         {
             fut = std::async(std::launch::async, f_thread, _p, p, f1, f2);
             v.push_back(std::move(fut));
             _p = p;
+            if (n_extra)
+                n_extra--;
         }
     }
 
-    RTYPE res = RTYPE();      // конструктор по умолчанию для типа RTYPE
+    RTYPE res = RTYPE();      // РєРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ РґР»СЏ С‚РёРїР° F2_RTYPE
 
     for (decltype(fut) & _fut : v)
     {
@@ -44,15 +45,15 @@ auto map_reduce(It p, It q, Fun1 f1, Fun2 f2, size_t threads) -> RTYPE
 
 int main()
 {
-    std::list<int> l = { 1,2,3,4 };
-    // параллельное суммирование в 3 потока
+    std::list<int> l = { 1,2,3,4,5,6,7 };
+    // ГЇГ Г°Г Г«Г«ГҐГ«ГјГ­Г®ГҐ Г±ГіГ¬Г¬ГЁГ°Г®ГўГ Г­ГЁГҐ Гў 3 ГЇГ®ГІГ®ГЄГ 
     auto sum = map_reduce(
-        l.begin(), l.end(),         // начало, конец
-        [](int i) {return i; },     // унаный функтор
-        std::plus<int>(),           // бинарный функтор
-        3                           // количество потоков
+        l.begin(), l.end(),         // Г­Г Г·Г Г«Г®, ГЄГ®Г­ГҐГ¶
+        [](int i) {return i; },     // ГіГ­Г Г­Г»Г© ГґГіГ­ГЄГІГ®Г°
+        std::plus<int>(),           // ГЎГЁГ­Г Г°Г­Г»Г© ГґГіГ­ГЄГІГ®Г°
+        3                           // ГЄГ®Г«ГЁГ·ГҐГ±ГІГўГ® ГЇГ®ГІГ®ГЄГ®Гў
     );
-    // проверка наличия чётных чисел в четыре потока
+    // ГЇГ°Г®ГўГҐГ°ГЄГ  Г­Г Г«ГЁГ·ГЁГї Г·ВёГІГ­Г»Гµ Г·ГЁГ±ГҐГ« Гў Г·ГҐГІГ»Г°ГҐ ГЇГ®ГІГ®ГЄГ 
     auto has_even = map_reduce(
         l.begin(), l.end(),
         [](int i) {return i % 2 == 0; },
