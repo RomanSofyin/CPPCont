@@ -6,7 +6,7 @@
 // Затем выполняется "объединение" результатов вычислений каждого потока.
 #define RTYPE decltype(f2(f1(*p), f1(*p)))
 template <class It, class Fun1, class Fun2>
-auto map_reduce(It p, It q, Fun1 f1, Fun2 f2, size_t threads) -> RTYPE
+auto map_reduce_async(It p, It q, Fun1 f1, Fun2 f2, size_t threads) -> RTYPE
 {
     auto f_thread = [](It p, It q, Fun1 f1, Fun2 f2)
     {
@@ -48,14 +48,14 @@ int main()
 {
     std::list<int> l = { 1,2,3,4,5,6,7 };
     // ïàðàëëåëüíîå ñóììèðîâàíèå â 3 ïîòîêà
-    auto sum = map_reduce(
+    auto sum = map_reduce_async(
         l.begin(), l.end(),         // íà÷àëî, êîíåö
         [](int i) {return i; },     // óíàíûé ôóíêòîð
         std::plus<int>(),           // áèíàðíûé ôóíêòîð
         3                           // êîëè÷åñòâî ïîòîêîâ
     );
     // ïðîâåðêà íàëè÷èÿ ÷¸òíûõ ÷èñåë â ÷åòûðå ïîòîêà
-    auto has_even = map_reduce(
+    auto has_even = map_reduce_async(
         l.begin(), l.end(),
         [](int i) {return i % 2 == 0; },
         std::logical_or<bool>(),
