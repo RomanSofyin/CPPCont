@@ -47,8 +47,20 @@ auto map_reduce_async(It p, It q, Fun1 f1, Fun2 f2, size_t threads) -> RTYPE
 template <class It, class Fun1, class Fun2>
 auto map_reduce_thread(It p, It q, Fun1 f1, Fun2 f2, size_t threads) -> RTYPE
 {
-    std::vector<RTYPE> v;
+    std::vector<std::pair<std::thread, RTYPE>> v;
+    std::pair<std::thread, RTYPE> pair;
+    v.push_back(std::move(pair));
+    //pair.second = RTYPE();
+    RTYPE r = RTYPE(5);
+    v[0].second = r;
+    RTYPE& rr1 = v[0].second;
+    rr1 = 11;
+    
+    RTYPE& rr2 = v.back().second;
+    rr2 = 22;
+
     auto _p = p;
+    
     size_t d = std::distance(p, q);
     size_t n_base = d / threads;
     size_t n_extra = d % threads;
@@ -57,17 +69,18 @@ auto map_reduce_thread(It p, It q, Fun1 f1, Fun2 f2, size_t threads) -> RTYPE
     {
         if (std::distance(_p, ++p) == (n_base + (n_extra ? 1 : 0)))
         {
-            RTYPE r = RTYPE();
-            std::thread t(
-                [&r](It p, It q, Fun1 f1, Fun2 f2)
+            std::pair<std::thread, RTYPE> pair;
+            RTYPE& r = pair.second;
+            pair.first = std::thread(
+                [&r](It p, It q, Fun1 f1, Fun2 f2)  // lambda
                 {
-                    auto r = f1(*p);
+                    r = f1(*p);
                     while (++p != q)
                         r = f2(r, f1(*p));
                 },
-                _p, p, &f1, &f2
+                _p, p, f1, f2
             );
-            v.push_back(r);
+
             _p = p;
             if (n_extra)
                 n_extra--;
@@ -76,8 +89,8 @@ auto map_reduce_thread(It p, It q, Fun1 f1, Fun2 f2, size_t threads) -> RTYPE
 
     RTYPE res = RTYPE();      // конструктор по умолчанию для типа F2_RTYPE
 
-    for (RTYPE & _r : v)
-        res = f2(res, _r);
+    //for (std::pair<std::thread, RTYPE> & p : v)
+    //    res = f2(res, _r);
 
     return res;
 }
@@ -85,7 +98,7 @@ auto map_reduce_thread(It p, It q, Fun1 f1, Fun2 f2, size_t threads) -> RTYPE
 
 int main()
 {
-    std::list<int> l = { 1,2,3,4,5,6,7 };
+    std::list<int> l = { 1,2,3,4,5 };
     {
         // ïàðàëëåëüíîå ñóììèðîâàíèå â 3 ïîòîêà
         auto sum = map_reduce_async(

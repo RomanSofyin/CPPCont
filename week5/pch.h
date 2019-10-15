@@ -13,6 +13,5 @@
 #include <future>
 #include <list>
 #include <vector>
-//#include <functional>
 
 #endif //PCH_H
