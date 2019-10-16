@@ -48,16 +48,6 @@ template <class It, class Fun1, class Fun2>
 auto map_reduce_thread(It p, It q, Fun1 f1, Fun2 f2, size_t threads) -> RTYPE
 {
     std::vector<std::pair<std::thread, RTYPE>> v;
-    std::pair<std::thread, RTYPE> pair;
-    v.push_back(std::move(pair));
-    //pair.second = RTYPE();
-    RTYPE r = RTYPE(5);
-    v[0].second = r;
-    RTYPE& rr1 = v[0].second;
-    rr1 = 11;
-    
-    RTYPE& rr2 = v.back().second;
-    rr2 = 22;
 
     auto _p = p;
     
@@ -69,10 +59,13 @@ auto map_reduce_thread(It p, It q, Fun1 f1, Fun2 f2, size_t threads) -> RTYPE
     {
         if (std::distance(_p, ++p) == (n_base + (n_extra ? 1 : 0)))
         {
-            std::pair<std::thread, RTYPE> pair;
-            RTYPE& r = pair.second;
-            pair.first = std::thread(
-                [&r](It p, It q, Fun1 f1, Fun2 f2)  // lambda
+            v.push_back(std::pair<std::thread, RTYPE>());
+            RTYPE& r = v.back().second;
+            v.back().first = std::thread(
+                // лямбда функция, захватывающая 'r' по ссылке;
+                // т.е. внутри лямбды будет выполняться работа не над копией 'r', а над той же самой переменной 'r'
+                // т.е. изменения переменной внутри люмбды будут "видны" снаружи лямбды
+                [&r](It p, It q, Fun1 f1, Fun2 f2)  
                 {
                     r = f1(*p);
                     while (++p != q)
@@ -87,10 +80,12 @@ auto map_reduce_thread(It p, It q, Fun1 f1, Fun2 f2, size_t threads) -> RTYPE
         }
     }
 
-    RTYPE res = RTYPE();      // конструктор по умолчанию для типа F2_RTYPE
+    RTYPE res = RTYPE();            // конструктор по умолчанию для типа F2_RTYPE
 
-    //for (std::pair<std::thread, RTYPE> & p : v)
-    //    res = f2(res, _r);
+    for (std::pair<std::thread, RTYPE>& p : v) {
+        p.first.join();             // ждём пока поток закончит выполнение
+        res = f2(res, p.second);    // учитываем результат вычислений потока
+    }
 
     return res;
 }
