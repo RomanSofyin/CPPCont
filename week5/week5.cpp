@@ -103,6 +103,20 @@ struct Fib<0> {
     static int const value = 0;
 };
 
+// определяем список целых чисел
+template <int ... Ns>
+struct IntList;
+// специализация по умолчанию
+template <int H, int ... T>
+struct IntList<H, T...>
+{
+    static const int Head = H;
+    using Tail = IntList<T...>;
+};
+// специализация для пустого списка
+template <>
+struct IntList<> { };
+
 int main()
 {
     std::list<int> l = { 1,2,3,4,5 };
@@ -142,5 +156,9 @@ int main()
     }
 
     std::cout << "Fib<10> = " << Fib<10>::value << std::endl;
+
+    using primes = IntList<2, 3, 5, 7, 11, 13>;
+    constexpr int head = primes::Head;
+    using odd_primes = primes::Tail;
 }
 
