@@ -90,10 +90,23 @@ auto map_reduce_thread(It p, It q, Fun1 f1, Fun2 f2, size_t threads) -> RTYPE
     return res;
 }
 
+template<int N>
+struct Fib {
+    static int const value = Fib<N-1>::value + Fib<N-2>::value;
+};
+template<>
+struct Fib<1> {
+    static int const value = 1;
+};
+template<>
+struct Fib<0> {
+    static int const value = 0;
+};
 
 int main()
 {
     std::list<int> l = { 1,2,3,4,5 };
+    // map_reduce_async testing
     {
         // ïàðàëëåëüíîå ñóììèðîâàíèå â 3 ïîòîêà
         auto sum = map_reduce_async(
@@ -110,6 +123,7 @@ int main()
             4
         );
     }
+    // map_reduce_thread testing
     {
         // ïàðàëëåëüíîå ñóììèðîâàíèå â 3 ïîòîêà
         auto sum = map_reduce_thread(
@@ -127,5 +141,6 @@ int main()
         );
     }
 
+    std::cout << "Fib<10> = " << Fib<10>::value << std::endl;
 }
 
