@@ -103,32 +103,72 @@ struct Fib<0> {
     static int const value = 0;
 };
 
-// определяем список целых чисел
-template <int ... Ns>
+/* * * * * * * * * *
+ * Шаблон IntList  *
+ * * * * * * * * * */
+// Определяем список целых чисел
+template <int ... Ints>
 struct IntList;
 // специализация по умолчанию - в списке есть минимум 1 элемент (голова), хвост может быть пустой
-template <int H, int ... T>
-struct IntList<H, T...>
+template <int H, int ... Ints>
+struct IntList<H, Ints...>
 {
     static const int Head = H;
-    using Tail = IntList<T...>;
+    using Tail = IntList<Ints...>;
 };
 // специализация для пустого списка
 template <>
 struct IntList<> { };
 
 // Метафункция Length для вычисления длины списка IntList
-template<typename TL>
+template<typename IL>
 struct Length
 {
     static int const value = 1 +
-        Length<typename TL::Tail>::value;   // "typename" необходим, чтобы сослаться к члену шаблонного параметра
+        Length<typename IL::Tail>::value;   // "typename" необходим, чтобы сослаться к члену шаблонного параметра
 };
 template<>
 struct Length<IntList<>>
 {
     static int const value = 0;
 };
+
+// Метафункция IntCons, добавляющая один элемент в голову списка
+template<int H, typename IL>
+struct IntCons;
+template<int H, int... Ints>
+struct IntCons<H, IntList<Ints...>>
+{
+    using type = IntList<H, Ints...>;
+};
+// Метафункция IntConsLast, добавляющая один элемент в хвост списка
+//template<int H, typename IL>
+//struct IntConsLast;
+//template<int H, int... Ints>
+//struct IntConsLast<H, IntList<Ints...>>
+//{
+//    using type = IntList<H, Ints...>;
+//};
+// Метафункция Generate, создающая шаблон IntList, содержащий указанное число элементов
+template<int N>
+struct Generate;
+template<int N>
+struct Generate
+{
+    //using type = typename IntCons<N, typename Generate<N-1>::type>::type;
+    using type = typename IntList<0, Generate<N-1>>;
+};
+template<>
+struct Generate<0>
+{
+    using type = IntList<0>;
+};
+
+template<typename T>
+void print_template_parm()
+{
+    std::cout << __FUNCSIG__ << std::endl;
+}
 
 int main()
 {
@@ -176,5 +216,9 @@ int main()
 
     using primes = IntList<2, 3, 5, 7, 11, 13>;
     constexpr size_t len = Length<primes>::value; // 6
-}
 
+    using L1 = IntList<2, 3, 4>;
+    using L2 = IntCons<1, L1>::type;   // IntList<1,2,3,4>
+    using L3 = Generate<55>::type;      // IntList<0,1,2,3,4>
+    print_template_parm<L3>();
+}
