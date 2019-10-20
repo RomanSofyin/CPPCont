@@ -179,6 +179,11 @@ void print_tmpl_par3<IntList<>>()
     std::cout << std::endl;
 };
 
+template <typename F, typename ... Args>
+/*auto*/ void apply(F f, std::tuple<Args...> & t) /*-> decltype(f)*/ {
+    /*int a = 5;
+    a++;*/
+}
 
 int main()
 {
@@ -224,13 +229,25 @@ int main()
     constexpr int head = primes::Head;
     using odd_primes = primes::Tail;
 
-    using primes = IntList<2, 3, 5, 7, 11, 13>;
-    constexpr size_t len = Length<primes>::value; // 6
-
-    using L1 = IntList<2, 3, 4>;
-    using L2 = IntCons<1, L1>::type;   // IntList<1,2,3,4>
-    using L3 = Generate<5>::type;      // IntList<0,1,2,3,4>
-    print_tmpl_parm<L3>();
-    print_tmpl_par2<L3>();
-    print_tmpl_par3<L3>();
+    // Length
+    {
+        using primes = IntList<2, 3, 5, 7, 11, 13>;
+        constexpr size_t len = Length<primes>::value; // 6
+    }
+    // IntCons, Generate, print_tmpl_par*
+    {
+        using L1 = IntList<2, 3, 4>;
+        using L2 = IntCons<1, L1>::type;   // IntList<1,2,3,4>
+        using L3 = Generate<5>::type;      // IntList<0,1,2,3,4>
+        print_tmpl_parm<L3>();
+        print_tmpl_par2<L3>();
+        print_tmpl_par3<L3>();
+    }
+    // apply()
+    {
+        auto f = [](int x, double y, double z) { return x + y + z; };
+        auto t = std::make_tuple(30, 5.0, 1.6); // std::tuple<int, double, double>
+        /*auto res = apply(f, t);*/                 // res = 36.6
+        apply(f, t);                 // test
+    }
 }
