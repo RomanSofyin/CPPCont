@@ -179,6 +179,9 @@ void print_tmpl_par3<IntList<>>()
     std::cout << std::endl;
 };
 
+// Воспользоваться IntList и метафункцией Generate для того, чтобы научиться "раскрывать" кортежи.
+// Требуется написать функцию apply, которая принимает функтор и кортеж с аргументами
+// для вызова этого функтора и вызывает функтор от этих аргументов.
 template <typename F, typename ... Args>
 /*auto*/ void apply(F f, std::tuple<Args...> & t) /*-> decltype(f)*/ {
     /*int a = 5;
