@@ -125,7 +125,7 @@ template<typename IL>
 struct Length
 {
     static int const value = 1 +
-        Length<typename IL::Tail>::value;   // "typename" необходим, чтобы сослаться к члену шаблонного параметра
+        Length<typename IL::Tail>::value;   // "typename" необходим, чтобы сослаться к члену шаблонного параметра, который является типом
 };
 template<>
 struct Length<IntList<>>
@@ -141,34 +141,44 @@ struct IntCons<H, IntList<Ints...>>
 {
     using type = IntList<H, Ints...>;
 };
-// Метафункция IntConsLast, добавляющая один элемент в хвост списка
-//template<int H, typename IL>
-//struct IntConsLast;
-//template<int H, int... Ints>
-//struct IntConsLast<H, IntList<Ints...>>
-//{
-//    using type = IntList<H, Ints...>;
-//};
+
 // Метафункция Generate, создающая шаблон IntList, содержащий указанное число элементов
-template<int N>
+template<int N, int K = 0>
 struct Generate;
-template<int N>
+template<int N, int K>
 struct Generate
 {
-    //using type = typename IntCons<N, typename Generate<N-1>::type>::type;
-    using type = typename IntList<0, Generate<N-1>>;
+    using type = typename IntCons<K, typename Generate<N-1, K+1>::type>::type;
+};
+template<int N>
+struct Generate<0, N>
+{
+    using type = IntList<>;
+};
+/*
+   Возможно такое определение Generate c пар-ом по умолчанию тоже можно использовать:
+template<int N, typename IL = IntList<>>
+struct Generate;
+*/
+
+/* * * * * * * * * * * * * * * * * * * * * *
+ * Вывод списка IntList разными способами  *
+ * * * * * * * * * * * * * * * * * * * * * */
+template<typename T>
+void print_tmpl_parm()  { std::cout << __FUNCSIG__ << std::endl; }
+template<typename T>
+void print_tmpl_par2() { std::cout << typeid(T).name() << "\n"; }
+template<typename IL>
+void print_tmpl_par3() {
+    std::cout << IL::Head << " ";
+    print_tmpl_par3< IL::Tail>();
 };
 template<>
-struct Generate<0>
+void print_tmpl_par3<IntList<>>()
 {
-    using type = IntList<0>;
+    std::cout << std::endl;
 };
 
-template<typename T>
-void print_template_parm()
-{
-    std::cout << __FUNCSIG__ << std::endl;
-}
 
 int main()
 {
@@ -219,6 +229,8 @@ int main()
 
     using L1 = IntList<2, 3, 4>;
     using L2 = IntCons<1, L1>::type;   // IntList<1,2,3,4>
-    using L3 = Generate<55>::type;      // IntList<0,1,2,3,4>
-    print_template_parm<L3>();
+    using L3 = Generate<5>::type;      // IntList<0,1,2,3,4>
+    print_tmpl_parm<L3>();
+    print_tmpl_par2<L3>();
+    print_tmpl_par3<L3>();
 }
