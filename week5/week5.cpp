@@ -182,11 +182,35 @@ void print_tmpl_par3<IntList<>>()
 // Воспользоваться IntList и метафункцией Generate для того, чтобы научиться "раскрывать" кортежи.
 // Требуется написать функцию apply, которая принимает функтор и кортеж с аргументами
 // для вызова этого функтора и вызывает функтор от этих аргументов.
-template <typename F, typename ... Args>
-/*auto*/ void apply(F f, std::tuple<Args...> & t) /*-> decltype(f)*/ {
-    /*int a = 5;
-    a++;*/
+// Хорошее описание здесь - https://blog.galowicz.de/2016/06/24/integer_sequences_at_compile_time/
+template <typename F, typename Tuple, int ... Indxs>
+static void apply_(F f, Tuple t, IntList<Indxs...>)
+{
+    f(std::get<Indxs>(t)...);
 }
+template <typename F, typename ... Args>
+/*auto*/ static void apply(F f, const std::tuple<Args...> & t) /*-> decltype(f)*/
+{
+    using seq = typename Generate<sizeof...(Args)>::type;
+    std::cout << typeid(seq).name() << "\n";
+    //apply_(f, t, Generate<sizeof...(Args)>{});
+    //f(std::forward<Args>(args)...)
+}
+
+/*
+  Example:
+  ========
+    #define RETURN_TYPE2 f(std::forward<Args>(args)...)
+    template<typename F, typename ...Args>
+    auto apply(F f, Args&& ... args ) -> decltype(RETURN_TYPE2) {	// "Args&& ... args" is a variadic universal reference
+        return f(std::forward<Args>(args)...);
+    }
+  Usage:
+  ========
+    auto fun = [](std::string a, std::string const& b) { return a += b; };
+    std::string str1("world!");
+    str1 = apply(fun, std::string("Hello, "), str1);	// apply() accepts as many args as fun does
+*/
 
 int main()
 {
