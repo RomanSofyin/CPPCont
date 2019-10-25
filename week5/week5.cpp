@@ -183,18 +183,29 @@ void print_tmpl_par3<IntList<>>()
 // Требуется написать функцию apply, которая принимает функтор и кортеж с аргументами
 // для вызова этого функтора и вызывает функтор от этих аргументов.
 // Хорошее описание здесь - https://blog.galowicz.de/2016/06/24/integer_sequences_at_compile_time/
-template <typename F, typename Tuple, int ... Indxs>
-static void apply_(F f, Tuple t, IntList<Indxs...>)
+template <
+    typename F,
+    typename Tuple, 
+    int ... indxs>  // в шаблоне ожидается не одно значение типа int, а список значений типа int; например "0,1,2"
+static auto apply_(F f, Tuple t, IntList<indxs...>) -> decltype(f(std::get<indxs>(t)...))
 {
-    f(std::get<Indxs>(t)...);
+    // здесь, при вызове функции 'f', проиходит вызов шаблонного метода std::get для кортежа 't', с указанием кажого из значений "indxs"
+    // т.е. если в качестве indxs шаблона IntList (переданного третьим параметром) переданы "0,1,2", то получется конструкция следующего вида:
+    // f(std::get<0>(t), std::get<1>(t), std::get<2>(t))
+    return f(std::get<indxs>(t)...);
 }
-template <typename F, typename ... Args>
-/*auto*/ static void apply(F f, const std::tuple<Args...> & t) /*-> decltype(f)*/
+template <
+    typename F, 
+    typename ... Args>  // в шаблоне ожидается использование конструкций, которые принимают не один тип, а список типов
+static auto apply(F f, 
+    const std::tuple<Args...>& t) // функция "apply" принимает кортеж не от одного шаблонного аргумента, а от списка шаблонных аргументов, которые являются типами
+    -> decltype(apply_(f, t, typename Generate<sizeof...(Args)>::type{}))
 {
-    using seq = typename Generate<sizeof...(Args)>::type;
-    std::cout << typeid(seq).name() << "\n";
-    //apply_(f, t, Generate<sizeof...(Args)>{});
-    //f(std::forward<Args>(args)...)
+    // "sizeof...(Args)" позволяет на этапе компиляции вычислить количество переданных шаблонных параметров
+    using intList = typename Generate<sizeof...(Args)>::type;
+    std::cout << typeid(intList).name() << "\n";
+    return apply_(f, t,
+        intList{}); // здесь в функцию передаётся экземпляр типа "intList"
 }
 
 /*
@@ -274,7 +285,6 @@ int main()
     {
         auto f = [](int x, double y, double z) { return x + y + z; };
         auto t = std::make_tuple(30, 5.0, 1.6); // std::tuple<int, double, double>
-        /*auto res = apply(f, t);*/                 // res = 36.6
-        apply(f, t);                 // test
+        auto res = apply(f, t);                 // res = 36.6
     }
 }
