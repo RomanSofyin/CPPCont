@@ -187,7 +187,7 @@ template <
     typename F,
     typename Tuple, 
     int ... indxs>  // в шаблоне ожидается не одно значение типа int, а список значений типа int; например "0,1,2"
-static auto apply_(F f, Tuple t, IntList<indxs...>) -> decltype(f(std::get<indxs>(t)...))
+auto apply_(F f, Tuple t, IntList<indxs...>) -> decltype(f(std::get<indxs>(t)...))
 {
     // здесь, при вызове функции 'f', проиходит вызов шаблонного метода std::get для кортежа 't', с указанием кажого из значений "indxs"
     // т.е. если в качестве indxs шаблона IntList (переданного третьим параметром) переданы "0,1,2", то получется конструкция следующего вида:
@@ -197,7 +197,7 @@ static auto apply_(F f, Tuple t, IntList<indxs...>) -> decltype(f(std::get<indxs
 template <
     typename F, 
     typename ... Args>  // в шаблоне ожидается использование конструкций, которые принимают не один тип, а список типов
-static auto apply(F f, 
+auto apply(F f, 
     const std::tuple<Args...>& t) // функция "apply" принимает кортеж не от одного шаблонного аргумента, а от списка шаблонных аргументов, которые являются типами
     -> decltype(apply_(f, t, typename Generate<sizeof...(Args)>::type{}))
 {
@@ -208,20 +208,17 @@ static auto apply(F f,
         intList{}); // здесь в функцию передаётся экземпляр типа "intList"
 }
 
-/*
-  Example:
-  ========
-    #define RETURN_TYPE2 f(std::forward<Args>(args)...)
-    template<typename F, typename ...Args>
-    auto apply(F f, Args&& ... args ) -> decltype(RETURN_TYPE2) {	// "Args&& ... args" is a variadic universal reference
-        return f(std::forward<Args>(args)...);
-    }
-  Usage:
-  ========
-    auto fun = [](std::string a, std::string const& b) { return a += b; };
-    std::string str1("world!");
-    str1 = apply(fun, std::string("Hello, "), str1);	// apply() accepts as many args as fun does
-*/
+// бинарная метафункция Plus
+template<int a, int b>
+struct Plus
+{
+    static int const value = a + b;
+};
+
+template<template <int,int> class Fun, int ... ints1, int ... ints2>
+struct Zip<IntList<ints...>,IntList<> {
+
+};
 
 int main()
 {
@@ -287,4 +284,13 @@ int main()
         auto t = std::make_tuple(30, 5.0, 1.6); // std::tuple<int, double, double>
         auto res = apply(f, t);                 // res = 36.6
     }
+    // Zip
+    {
+        // два списка одной длины
+        using L1 = IntList<1, 2, 3, 4, 5>;
+        using L2 = IntList<1, 3, 7, 7, 2>;
+        // результат применения — список с поэлементными суммами
+        //using L3 = Zip<L1, L2, Plus>::type;  // IntList<2, 5, 10, 11, 7>
+    }
 }
+
