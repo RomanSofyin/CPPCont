@@ -215,9 +215,25 @@ struct Plus
     static int const value = a + b;
 };
 
-template<template <int,int> class Fun, int ... ints1, int ... ints2>
-struct Zip<IntList<ints...>,IntList<> {
-
+template<
+    typename IL1,
+    typename IL2,
+    template <int, int> class Fun   // шаблонный параметр, который является шаблоном (шаблонным классом - "class Fun") с двумя целочисленными шаблонными параметрами
+>
+struct Zip;
+template<typename IL1, typename IL2, template <int,int> class Fun>
+struct Zip {
+    using type = typename IntCons<
+        Fun<IL1::Head, IL2::Head>::value,
+        typename Zip<
+            typename IL1::Tail,
+            typename IL2::Tail, Fun
+        >::type
+    >::type;
+};
+template<template <int, int> class Fun>
+struct Zip<IntList<>, IntList<>, Fun> {
+    using type = IntList<>;
 };
 
 int main()
@@ -290,7 +306,8 @@ int main()
         using L1 = IntList<1, 2, 3, 4, 5>;
         using L2 = IntList<1, 3, 7, 7, 2>;
         // результат применения — список с поэлементными суммами
-        //using L3 = Zip<L1, L2, Plus>::type;  // IntList<2, 5, 10, 11, 7>
+        using L3 = Zip<L1, L2, Plus>::type;  // IntList<2, 5, 10, 11, 7>
+        print_tmpl_par3<L3>();
     }
 }
 
