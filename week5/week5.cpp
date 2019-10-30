@@ -236,6 +236,30 @@ struct Zip<IntList<>, IntList<>, Fun> {
     using type = IntList<>;
 };
 
+// на помощь - https://benjaminjurke.com/content/articles/2015/compile-time-numerical-unit-dimension-checking/
+// Dimension представляет размерность вещественного числа в системе СИ
+template<int m = 0, int kg = 0, int s = 0, int A = 0, int K = 0, int mol = 0, int cd = 0>
+using Dimension = IntList<m, kg, s, A, K, mol, cd>;
+// Quantity хранит вещественное число и его размерность в системе СИ
+// Требования к Quantity :
+//  - Конструктор по умолчанию и explicit конструктор от double.
+//  - Метод value(), который возвращает значение типа double.
+//  - Можно складывать только величины одной размерности.
+//  - При умножении(делении) соответствующие размерности поэлементно складываются(вычитаются).
+//  - Нужно реализовать умножение и деление на число типа double.
+//     + деление double на Quantity
+template<template <int,int,int,int,int,int,int> class Dim>
+struct Quantity {
+private:
+    double v;
+
+public:
+    Quantity() : v(0) {};
+    explicit Quantity(double v) : v(v) {};
+    double value() const { return v; }
+};
+
+
 int main()
 {
     std::list<int> l = { 1,2,3,4,5 };
@@ -308,6 +332,26 @@ int main()
         // результат применения — список с поэлементными суммами
         using L3 = Zip<L1, L2, Plus>::type;  // IntList<2, 5, 10, 11, 7>
         print_tmpl_par3<L3>();
+    }
+
+    {
+        using NumberQ   = Quantity<Dimension<>>;           // число без размерности
+        using LengthQ   = Quantity<Dimension<1>>;          // метры
+        using MassQ     = Quantity<Dimension<0, 1>>;       // килограммы
+        using TimeQ     = Quantity<Dimension<0, 0, 1>>;    // секунды
+        using VelocityQ = Quantity<Dimension<1, 0, -1>>;   // метры в секунду
+        using AccelQ    = Quantity<Dimension<1, 0, -2>>;   // ускорение, метры в секунду в квадрате
+        using ForceQ    = Quantity<Dimension<1, 1, -2>>;   // сила в ньютонах
+
+        LengthQ   l{ 30000 };      // 30 км
+        TimeQ     t{ 10 * 60 };    // 10 минут
+        // вычисление скорости
+        VelocityQ v = l / t;     // результат типа VelocityQ, 50 м/с
+
+        AccelQ    a{ 9.8 };        // ускорение свободного падения
+        MassQ     m{ 80 };         // 80 кг
+        // сила притяжения, которая действует на тело массой 80 кг
+        ForceQ    f = m * a;     // результат типа ForceQ
     }
 }
 
