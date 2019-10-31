@@ -151,7 +151,17 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Dimension.h" />
+    <ClInclude Include="Fib.h" />
+    <ClInclude Include="Generate.h" />
+    <ClInclude Include="IntCons.h" />
+    <ClInclude Include="IntList.h" />
+    <ClInclude Include="Length.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="Plus.h" />
+    <ClInclude Include="Quantity.h" />
+    <ClInclude Include="week5.h" />
+    <ClInclude Include="Zip.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">

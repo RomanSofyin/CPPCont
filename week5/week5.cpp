@@ -1,6 +1,16 @@
 ﻿#include "pch.h"
 #include <iostream>
 
+#include "Fib.h"
+#include "IntList.h"
+#include "Length.h"
+#include "IntCons.h"
+#include "Generate.h"
+#include "Zip.h"
+#include "Plus.h"
+#include "Quantity.h"
+#include "Dimension.h"
+
 // Функция разбивает последовательность, заданную через итераторы 'p' и 'q' на 'threads' отрезков
 // и выполняет вычисления над элементами этих подпоследовательностей в 'threads' потоков.
 // Затем выполняется "объединение" результатов вычислений каждого потока.
@@ -90,94 +100,13 @@ auto map_reduce_thread(It p, It q, Fun1 f1, Fun2 f2, size_t threads) -> RTYPE
     return res;
 }
 
-template<int N>
-struct Fib {
-    static int const value = Fib<N-1>::value + Fib<N-2>::value;
-};
-template<>
-struct Fib<1> {
-    static int const value = 1;
-};
-template<>
-struct Fib<0> {
-    static int const value = 0;
-};
-
-/* * * * * * * * * *
- * Шаблон IntList  *
- * * * * * * * * * */
-// Определяем список целых чисел
-template <int ... Ints>
-struct IntList;
-// специализация по умолчанию - в списке есть минимум 1 элемент (голова), хвост может быть пустой
-template <int H, int ... Ints>
-struct IntList<H, Ints...>
-{
-    static const int Head = H;
-    using Tail = IntList<Ints...>;
-};
-// специализация для пустого списка
-template <>
-struct IntList<> { };
-
-// Метафункция Length для вычисления длины списка IntList
-template<typename IL>
-struct Length
-{
-    static int const value = 1 +
-        Length<typename IL::Tail>::value;   // "typename" необходим, чтобы сослаться к члену шаблонного параметра, который является типом
-};
-template<>
-struct Length<IntList<>>
-{
-    static int const value = 0;
-};
-
-// Метафункция IntCons, добавляющая один элемент в голову списка
-template<int H, typename IL>
-struct IntCons;
-template<int H, int... Ints>
-struct IntCons<H, IntList<Ints...>>
-{
-    using type = IntList<H, Ints...>;
-};
-
-// Метафункция Generate, создающая шаблон IntList, содержащий указанное число элементов
-template<int N, int K = 0>
-struct Generate;
-template<int N, int K>
-struct Generate
-{
-    using type = typename IntCons<K, typename Generate<N-1, K+1>::type>::type;
-};
-template<int N>
-struct Generate<0, N>
-{
-    using type = IntList<>;
-};
-/*
-   Возможно такое определение Generate c пар-ом по умолчанию тоже можно использовать:
-template<int N, typename IL = IntList<>>
-struct Generate;
-*/
-
 /* * * * * * * * * * * * * * * * * * * * * *
  * Вывод списка IntList разными способами  *
  * * * * * * * * * * * * * * * * * * * * * */
-template<typename T>
-void print_tmpl_parm()  { std::cout << __FUNCSIG__ << std::endl; }
-template<typename T>
-void print_tmpl_par2() { std::cout << typeid(T).name() << "\n"; }
-template<typename IL>
-void print_tmpl_par3() {
-    std::cout << IL::Head << " ";
-    print_tmpl_par3< IL::Tail>();
-};
-template<>
-void print_tmpl_par3<IntList<>>()
-{
-    std::cout << std::endl;
-};
+template<typename T> void print_tmpl_parm()  { std::cout << __FUNCSIG__ << std::endl; }
+template<typename T> void print_tmpl_par2()  { std::cout << typeid(T).name() << "\n"; }
+template<typename IL> void print_tmpl_par3() { std::cout << IL::Head << " "; print_tmpl_par3< IL::Tail>(); }
+template<> void print_tmpl_par3<IntList<>>() { std::cout << std::endl; }
 
 // Воспользоваться IntList и метафункцией Generate для того, чтобы научиться "раскрывать" кортежи.
 // Требуется написать функцию apply, которая принимает функтор и кортеж с аргументами
@@ -208,56 +137,13 @@ auto apply(F f,
         intList{}); // здесь в функцию передаётся экземпляр типа "intList"
 }
 
-// бинарная метафункция Plus
-template<int a, int b>
-struct Plus
-{
-    static int const value = a + b;
-};
-
-template<
-    typename IL1,
-    typename IL2,
-    template <int, int> class Fun   // шаблонный параметр, который является шаблоном (шаблонным классом - "class Fun") с двумя целочисленными шаблонными параметрами
->
-struct Zip;
-template<typename IL1, typename IL2, template <int,int> class Fun>
-struct Zip {
-    using type = typename IntCons<
-        Fun<IL1::Head, IL2::Head>::value,
-        typename Zip<
-            typename IL1::Tail,
-            typename IL2::Tail, Fun
-        >::type
-    >::type;
-};
-template<template <int, int> class Fun>
-struct Zip<IntList<>, IntList<>, Fun> {
-    using type = IntList<>;
-};
-
+//
 // на помощь - https://benjaminjurke.com/content/articles/2015/compile-time-numerical-unit-dimension-checking/
-// Dimension представляет размерность вещественного числа в системе СИ
-template<int m = 0, int kg = 0, int s = 0, int A = 0, int K = 0, int mol = 0, int cd = 0>
-using Dimension = IntList<m, kg, s, A, K, mol, cd>;
-// Quantity хранит вещественное число и его размерность в системе СИ
-// Требования к Quantity :
-//  - Конструктор по умолчанию и explicit конструктор от double.
-//  - Метод value(), который возвращает значение типа double.
-//  - Можно складывать только величины одной размерности.
-//  - При умножении(делении) соответствующие размерности поэлементно складываются(вычитаются).
-//  - Нужно реализовать умножение и деление на число типа double.
-//     + деление double на Quantity
-template<template <int,int,int,int,int,int,int> class Dim>
-struct Quantity {
-private:
-    double v;
-
-public:
-    Quantity() : v(0) {};
-    explicit Quantity(double v) : v(v) {};
-    double value() const { return v; }
-};
+//template <template <int, int, int, int, int, int, int> class Dim>
+//Quantity<Dim> operator+(const Quantity<Dim>& lhs, const Quantity<Dim>& rhs)
+//{
+//    return Quantity<Dim>(lhs.value + rhs.value);
+//}
 
 
 int main()
@@ -297,13 +183,16 @@ int main()
             4
         );
     }
-
-    std::cout << "Fib<10> = " << Fib<10>::value << std::endl;
-
-    using primes = IntList<2, 3, 5, 7, 11, 13>;
-    constexpr int head = primes::Head;
-    using odd_primes = primes::Tail;
-
+    // Fib
+    {
+        std::cout << "Fib<10> = " << Fib<10>::value << std::endl;
+    }
+    //IntList
+    {
+        using primes = IntList<2, 3, 5, 7, 11, 13>;
+        constexpr int head = primes::Head;
+        using odd_primes = primes::Tail;
+    }
     // Length
     {
         using primes = IntList<2, 3, 5, 7, 11, 13>;
@@ -335,14 +224,14 @@ int main()
     }
 
     {
-        using NumberQ   = Quantity<Dimension<>>;           // число без размерности
-        using LengthQ   = Quantity<Dimension<1>>;          // метры
-        using MassQ     = Quantity<Dimension<0, 1>>;       // килограммы
-        using TimeQ     = Quantity<Dimension<0, 0, 1>>;    // секунды
-        using VelocityQ = Quantity<Dimension<1, 0, -1>>;   // метры в секунду
-        using AccelQ    = Quantity<Dimension<1, 0, -2>>;   // ускорение, метры в секунду в квадрате
-        using ForceQ    = Quantity<Dimension<1, 1, -2>>;   // сила в ньютонах
-
+        //using NumberQ   = Quantity<Dimension<>>;           // число без размерности
+        //using LengthQ   = Quantity<Dimension<1>>;          // метры
+        //using MassQ     = Quantity<Dimension<0, 1>>;       // килограммы
+        //using TimeQ     = Quantity<Dimension<0, 0, 1>>;    // секунды
+        //using VelocityQ = Quantity<Dimension<1, 0, -1>>;   // метры в секунду
+        //using AccelQ    = Quantity<Dimension<1, 0, -2>>;   // ускорение, метры в секунду в квадрате
+        //using ForceQ    = Quantity<Dimension<1, 1, -2>>;   // сила в ньютонах
+        /*
         LengthQ   l{ 30000 };      // 30 км
         TimeQ     t{ 10 * 60 };    // 10 минут
         // вычисление скорости
@@ -352,6 +241,7 @@ int main()
         MassQ     m{ 80 };         // 80 кг
         // сила притяжения, которая действует на тело массой 80 кг
         ForceQ    f = m * a;     // результат типа ForceQ
+        */
     }
 }
 
