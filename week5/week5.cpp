@@ -137,7 +137,11 @@ auto apply(F f,
         intList{}); // здесь в функцию передаётся экземпляр типа "intList"
 }
 
-//
+// Операторы для класса Quantity:
+//  - Можно складывать только величины одной размерности.
+//  - При умножении/делении соответствующие размерности поэлементно складываются/вычитаются.
+//  - Нужно реализовать умножение и деление на число типа double.
+//     + деление double на Quantity
 // на помощь - https://benjaminjurke.com/content/articles/2015/compile-time-numerical-unit-dimension-checking/
 //template <template <int, int, int, int, int, int, int> class Dim>
 //Quantity<Dim> operator+(const Quantity<Dim>& lhs, const Quantity<Dim>& rhs)
@@ -223,22 +227,25 @@ int main()
         print_tmpl_par3<L3>();
     }
 
-    {
-        //using NumberQ   = Quantity<Dimension<>>;           // число без размерности
-        //using LengthQ   = Quantity<Dimension<1>>;          // метры
-        //using MassQ     = Quantity<Dimension<0, 1>>;       // килограммы
-        //using TimeQ     = Quantity<Dimension<0, 0, 1>>;    // секунды
-        //using VelocityQ = Quantity<Dimension<1, 0, -1>>;   // метры в секунду
-        //using AccelQ    = Quantity<Dimension<1, 0, -2>>;   // ускорение, метры в секунду в квадрате
-        //using ForceQ    = Quantity<Dimension<1, 1, -2>>;   // сила в ньютонах
-        /*
+    {        
+        using NumberQ   = Quantity<Dimension<>>;           // число без размерности
+        using LengthQ   = Quantity<Dimension<1>>;          // метры
+        // CRT detected that the application wrote to memory after end of heap buffer
+        using MassQ     = Quantity<Dimension<0, 1>>;       // килограммы
+        using TimeQ     = Quantity<Dimension<0, 0, 1>>;    // секунды
+        using VelocityQ = Quantity<Dimension<1, 0, -1>>;   // метры в секунду
+        using AccelQ    = Quantity<Dimension<1, 0, -2>>;   // ускорение, метры в секунду в квадрате
+        using ForceQ    = Quantity<Dimension<1, 1, -2>>;   // сила в ньютонах
+        
         LengthQ   l{ 30000 };      // 30 км
         TimeQ     t{ 10 * 60 };    // 10 минут
+        /*
         // вычисление скорости
         VelocityQ v = l / t;     // результат типа VelocityQ, 50 м/с
-
+        */
         AccelQ    a{ 9.8 };        // ускорение свободного падения
         MassQ     m{ 80 };         // 80 кг
+        /*
         // сила притяжения, которая действует на тело массой 80 кг
         ForceQ    f = m * a;     // результат типа ForceQ
         */

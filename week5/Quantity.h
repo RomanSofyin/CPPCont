@@ -4,11 +4,7 @@
 // Требования к Quantity :
 //  - Конструктор по умолчанию и explicit конструктор от double.
 //  - Метод value(), который возвращает значение типа double.
-//  - Можно складывать только величины одной размерности.
-//  - При умножении(делении) соответствующие размерности поэлементно складываются(вычитаются).
-//  - Нужно реализовать умножение и деление на число типа double.
-//     + деление double на Quantity
-template<template <int, int, int, int, int, int, int> class Dim>
+template<class Dim>
 struct Quantity {
 private:
     double v;
