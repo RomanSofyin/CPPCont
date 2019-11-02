@@ -143,49 +143,68 @@ auto apply(F f,
 //  - Нужно реализовать умножение и деление на число типа double.
 //     + деление double на Quantity
 // на помощь - https://benjaminjurke.com/content/articles/2015/compile-time-numerical-unit-dimension-checking/
-//template <template <int, int, int, int, int, int, int> class Dim>
-//Quantity<Dim> operator+(const Quantity<Dim>& lhs, const Quantity<Dim>& rhs)
-//{
-//    return Quantity<Dim>(lhs.value + rhs.value);
-//}
+
+//template <
+//    template <int a1, int, int, int, int, int, int> class IL1,
+//    template <int a2, int, int, int, int, int, int> class IL2
+//>
+template <typename IL1, typename IL2>
+//Quantity<IntList<a1 + a2, 2, 3, 4, 5, 6, 7>> operator+(/*const Quantity<>& lhs, const Quantity<>& rhs*/)
+auto operator+(Quantity<IL1>& lhs, const Quantity<IL2>& rhs) -> decltype(Zip<IL1,IL2, Plus>::type)
+{
+    //return Quantity<Dim>(lhs.value + rhs.value);
+    double newValue = lhs.value() + rhs.value();
+    return Quantity<Zip<IL1, IL2, Plus>::type>(newValue);
+}
+
+template <typename IL1, typename IL2>
+auto operator*(Quantity<IL1>& lhs, const Quantity<IL2>& rhs) -> decltype(Quantity<typename Zip<IL1, IL2, Plus>::type>)
+{
+    //return Quantity<Dim>(lhs.value + rhs.value);
+    double newValue = lhs.value() * rhs.value();
+    return Quantity<Zip<IL1, IL2, Plus>::type>(newValue);
+}
 
 
 int main()
 {
-    std::list<int> l = { 1,2,3,4,5 };
-    // map_reduce_async testing
+    // map_reduce_*
     {
-        // ïàðàëëåëüíîå ñóììèðîâàíèå â 3 ïîòîêà
-        auto sum = map_reduce_async(
-            l.begin(), l.end(),         // íà÷àëî, êîíåö
-            [](int i) {return i; },     // óíàíûé ôóíêòîð
-            std::plus<int>(),           // áèíàðíûé ôóíêòîð
-            3                           // êîëè÷åñòâî ïîòîêîâ
-        );
-        // ïðîâåðêà íàëè÷èÿ ÷¸òíûõ ÷èñåë â ÷åòûðå ïîòîêà
-        auto has_even = map_reduce_async(
-            l.begin(), l.end(),
-            [](int i) {return i % 2 == 0; },
-            std::logical_or<bool>(),
-            4
-        );
-    }
-    // map_reduce_thread testing
-    {
-        // ïàðàëëåëüíîå ñóììèðîâàíèå â 3 ïîòîêà
-        auto sum = map_reduce_thread(
-            l.begin(), l.end(),         // íà÷àëî, êîíåö
-            [](int i) {return i; },     // óíàíûé ôóíêòîð
-            std::plus<int>(),           // áèíàðíûé ôóíêòîð
-            3                           // êîëè÷åñòâî ïîòîêîâ
-        );
-        // ïðîâåðêà íàëè÷èÿ ÷¸òíûõ ÷èñåë â ÷åòûðå ïîòîêà
-        auto has_even = map_reduce_thread(
-            l.begin(), l.end(),
-            [](int i) {return i % 2 == 0; },
-            std::logical_or<bool>(),
-            4
-        );
+        std::list<int> l = { 1,2,3,4,5 };
+        // map_reduce_async testing
+        {
+            // ïàðàëëåëüíîå ñóììèðîâàíèå â 3 ïîòîêà
+            auto sum = map_reduce_async(
+                l.begin(), l.end(),         // íà÷àëî, êîíåö
+                [](int i) {return i; },     // óíàíûé ôóíêòîð
+                std::plus<int>(),           // áèíàðíûé ôóíêòîð
+                3                           // êîëè÷åñòâî ïîòîêîâ
+            );
+            // ïðîâåðêà íàëè÷èÿ ÷¸òíûõ ÷èñåë â ÷åòûðå ïîòîêà
+            auto has_even = map_reduce_async(
+                l.begin(), l.end(),
+                [](int i) {return i % 2 == 0; },
+                std::logical_or<bool>(),
+                4
+            );
+        }
+        // map_reduce_thread testing
+        {
+            // ïàðàëëåëüíîå ñóììèðîâàíèå â 3 ïîòîêà
+            auto sum = map_reduce_thread(
+                l.begin(), l.end(),         // íà÷àëî, êîíåö
+                [](int i) {return i; },     // óíàíûé ôóíêòîð
+                std::plus<int>(),           // áèíàðíûé ôóíêòîð
+                3                           // êîëè÷åñòâî ïîòîêîâ
+            );
+            // ïðîâåðêà íàëè÷èÿ ÷¸òíûõ ÷èñåë â ÷åòûðå ïîòîêà
+            auto has_even = map_reduce_thread(
+                l.begin(), l.end(),
+                [](int i) {return i % 2 == 0; },
+                std::logical_or<bool>(),
+                4
+            );
+        }
     }
     // Fib
     {
@@ -226,29 +245,23 @@ int main()
         using L3 = Zip<L1, L2, Plus>::type;  // IntList<2, 5, 10, 11, 7>
         print_tmpl_par3<L3>();
     }
-
+    // Quantity, Dimension
     {        
-        using NumberQ   = Quantity<Dimension<>>;           // число без размерности
-        using LengthQ   = Quantity<Dimension<1>>;          // метры
-        // CRT detected that the application wrote to memory after end of heap buffer
-        using MassQ     = Quantity<Dimension<0, 1>>;       // килограммы
-        using TimeQ     = Quantity<Dimension<0, 0, 1>>;    // секунды
-        using VelocityQ = Quantity<Dimension<1, 0, -1>>;   // метры в секунду
-        using AccelQ    = Quantity<Dimension<1, 0, -2>>;   // ускорение, метры в секунду в квадрате
-        using ForceQ    = Quantity<Dimension<1, 1, -2>>;   // сила в ньютонах
-        
         LengthQ   l{ 30000 };      // 30 км
         TimeQ     t{ 10 * 60 };    // 10 минут
+        
+        //LengthQ 2l = l + l;
         /*
         // вычисление скорости
         VelocityQ v = l / t;     // результат типа VelocityQ, 50 м/с
         */
         AccelQ    a{ 9.8 };        // ускорение свободного падения
         MassQ     m{ 80 };         // 80 кг
-        /*
         // сила притяжения, которая действует на тело массой 80 кг
         ForceQ    f = m * a;     // результат типа ForceQ
+        /*
         */
+        int aaaa = 65;
     }
 }
 
