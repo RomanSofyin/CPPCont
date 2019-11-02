@@ -6,3 +6,10 @@ struct Plus
 {
     static int const value = a + b;
 };
+
+// бинарная метафункция Minus
+template<int a, int b>
+struct Minus
+{
+    static int const value = a - b;
+};

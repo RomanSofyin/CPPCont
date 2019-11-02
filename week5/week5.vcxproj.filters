@@ -39,13 +39,13 @@
     <ClInclude Include="week5.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Plus.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Quantity.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Dimension.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PlusMinus.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
