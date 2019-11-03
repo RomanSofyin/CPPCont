@@ -45,7 +45,7 @@
     <ClInclude Include="Dimension.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="PlusMinus.h">
+    <ClInclude Include="MetaArith.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

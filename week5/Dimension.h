@@ -11,6 +11,7 @@ using NumberQ   = Quantity<Dimension<>>;            // число без раз�
 using LengthQ   = Quantity<Dimension<1>>;           // метры
 using MassQ     = Quantity<Dimension<0, 1>>;        // килограммы
 using TimeQ     = Quantity<Dimension<0, 0, 1>>;     // секунды
+using FreqQ     = Quantity<Dimension<0, 0, -1>>;    // частота
 using VelocityQ = Quantity<Dimension<1, 0, -1>>;    // метры в секунду
 using AccelQ    = Quantity<Dimension<1, 0, -2>>;    // ускорение, метры в секунду в квадрате
 using ForceQ    = Quantity<Dimension<1, 1, -2>>;    // сила в ньютонах

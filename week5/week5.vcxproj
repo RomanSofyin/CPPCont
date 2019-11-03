@@ -159,7 +159,7 @@
     <ClInclude Include="IntList.h" />
     <ClInclude Include="Length.h" />
     <ClInclude Include="pch.h" />
-    <ClInclude Include="PlusMinus.h" />
+    <ClInclude Include="MetaArith.h" />
     <ClInclude Include="Quantity.h" />
     <ClInclude Include="week5.h" />
     <ClInclude Include="Zip.h" />

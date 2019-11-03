@@ -7,7 +7,7 @@
 #include "IntCons.h"
 #include "Generate.h"
 #include "Zip.h"
-#include "PlusMinus.h"
+#include "MetaArith.h"
 #include "Quantity.h"
 #include "Dimension.h"
 
@@ -148,23 +148,68 @@ auto apply(F f,
 //    template <int a1, int, int, int, int, int, int> class IL1,
 //    template <int a2, int, int, int, int, int, int> class IL2
 //>
-template <typename IL1, typename IL2>
+//template <typename IL1, typename IL2>
 //Quantity<IntList<a1 + a2, 2, 3, 4, 5, 6, 7>> operator+(/*const Quantity<>& lhs, const Quantity<>& rhs*/)
-auto operator+(Quantity<IL1>& lhs, const Quantity<IL2>& rhs) -> decltype(Zip<IL1,IL2, Plus>::type)
+//auto operator+(Quantity<IL1>& lhs, const Quantity<IL2>& rhs) -> decltype(Zip<IL1,IL2, Plus>::type)
+//{
+//    //return Quantity<Dim>(lhs.value + rhs.value);
+//    double newValue = lhs.value() + rhs.value();
+//    return Quantity<Zip<IL1, IL2, Plus>::type>(newValue);
+//}
+
+template <typename IL>
+auto operator+(const Quantity<IL>& lhs, const Quantity<IL>& rhs) -> decltype(Quantity<IL>())
 {
-    //return Quantity<Dim>(lhs.value + rhs.value);
     double newValue = lhs.value() + rhs.value();
-    return Quantity<Zip<IL1, IL2, Plus>::type>(newValue);
+    return Quantity<IL>(newValue);
+}
+
+template <typename IL>
+auto operator-(const Quantity<IL>& lhs, const Quantity<IL>& rhs) -> decltype(Quantity<IL>())
+{
+    double newValue = lhs.value() - rhs.value();
+    return Quantity<IL>(newValue);
 }
 
 template <typename IL1, typename IL2>
-auto operator*(Quantity<IL1>& lhs, const Quantity<IL2>& rhs) -> decltype(Quantity<typename Zip<IL1, IL2, Plus>::type>)
+auto operator*(const Quantity<IL1>& lhs, const Quantity<IL2>& rhs) -> decltype(Quantity<typename Zip<IL1, IL2, Plus>::type>())
 {
-    //return Quantity<Dim>(lhs.value + rhs.value);
     double newValue = lhs.value() * rhs.value();
-    return Quantity<Zip<IL1, IL2, Plus>::type>(newValue);
+    return Quantity<typename Zip<IL1, IL2, Plus>::type>(newValue);
+}
+template <typename IL1>
+auto operator*(const Quantity<IL1>& lhs, const double r) -> decltype(Quantity<IL1>())
+{
+    double newValue = lhs.value() * r;
+    return Quantity<IL1>(newValue);
+}
+template <typename IL2>
+auto operator*(const double l, const Quantity<IL2>& rhs) -> decltype(Quantity<IL2>())
+{
+    double newValue = l * rhs.value();
+    return Quantity<IL2>(newValue);
 }
 
+template <typename IL1, typename IL2>
+auto operator/(const Quantity<IL1>& lhs, const Quantity<IL2>& rhs) -> decltype(Quantity<typename Zip<IL1, IL2, Minus>::type>())
+{
+    double newValue = lhs.value() / rhs.value();
+    return Quantity<typename Zip<IL1, IL2, Minus>::type>(newValue);
+}
+template <typename IL1>
+auto operator/(const Quantity<IL1>& lhs, const double r) -> decltype(Quantity<IL1>())
+{
+    double newValue = 0;
+    if (r)
+        newValue = lhs.value() / r;
+    return Quantity<IL1>(newValue);
+}
+template <typename IL2>
+auto operator/(const double l, const Quantity<IL2>& rhs) -> decltype(Quantity<typename UnaryZip<IL2, Neg>::type>())
+{
+    double newValue = l / rhs.value();
+    return Quantity<typename UnaryZip<IL2, Neg>::type>(newValue);
+}
 
 int main()
 {
@@ -247,20 +292,26 @@ int main()
     }
     // Quantity, Dimension
     {        
-        LengthQ   l{ 30000 };      // 30 км
-        TimeQ     t{ 10 * 60 };    // 10 минут
+        LengthQ   l{ 30000 };           // 30 км
+        TimeQ     t{ 10 * 60 };         // 10 минут
+        // ll = 3*l
+        LengthQ lll1 = l + l + l;       // 90 км
+        LengthQ lll2 = 3 * l;           // 90 км
+        LengthQ lll3 = l * 3;           // 90 км
+        LengthQ ll = lll1 - (2 * l);    // 30 км
         
-        //LengthQ 2l = l + l;
-        /*
         // вычисление скорости
-        VelocityQ v = l / t;     // результат типа VelocityQ, 50 м/с
-        */
-        AccelQ    a{ 9.8 };        // ускорение свободного падения
-        MassQ     m{ 80 };         // 80 кг
-        // сила притяжения, которая действует на тело массой 80 кг
-        ForceQ    f = m * a;     // результат типа ForceQ
-        /*
-        */
+        VelocityQ v = l / t;            // результат типа VelocityQ, 50 м/с
+        
+        AccelQ    a{ 9.8 };             // ускорение свободного падения
+        MassQ     m{ 80 };              // 80 кг
+        // f - сила притяжения, которая действует на тело массой 80 кг
+        ForceQ    F1 = m * a;           // Сила притяжения = 784 (кг*м/с^2 = Ньютон)
+        ForceQ    F2 = F1 / 2;          // f пополам = 392       (кг*м/с^2 = Ньютон)
+
+        FreqQ     f{ 25 };              // Частота = 25          (1/с = Герц)
+        TimeQ     T = 1 / f;            // Период = 0.04 с
+
         int aaaa = 65;
     }
 }
