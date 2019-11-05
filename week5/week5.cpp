@@ -143,20 +143,6 @@ auto apply(F f,
 //  - Нужно реализовать умножение и деление на число типа double.
 //     + деление double на Quantity
 // на помощь - https://benjaminjurke.com/content/articles/2015/compile-time-numerical-unit-dimension-checking/
-
-//template <
-//    template <int a1, int, int, int, int, int, int> class IL1,
-//    template <int a2, int, int, int, int, int, int> class IL2
-//>
-//template <typename IL1, typename IL2>
-//Quantity<IntList<a1 + a2, 2, 3, 4, 5, 6, 7>> operator+(/*const Quantity<>& lhs, const Quantity<>& rhs*/)
-//auto operator+(Quantity<IL1>& lhs, const Quantity<IL2>& rhs) -> decltype(Zip<IL1,IL2, Plus>::type)
-//{
-//    //return Quantity<Dim>(lhs.value + rhs.value);
-//    double newValue = lhs.value() + rhs.value();
-//    return Quantity<Zip<IL1, IL2, Plus>::type>(newValue);
-//}
-
 template <typename IL>
 auto operator+(const Quantity<IL>& lhs, const Quantity<IL>& rhs) -> decltype(Quantity<IL>())
 {
