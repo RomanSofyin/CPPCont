@@ -10,6 +10,7 @@
 #include "MetaArith.h"
 #include "Quantity.h"
 #include "Dimension.h"
+#include "SizeStruct.h"
 
 // Функция разбивает последовательность, заданную через итераторы 'p' и 'q' на 'threads' отрезков
 // и выполняет вычисления над элементами этих подпоследовательностей в 'threads' потоков.
@@ -197,6 +198,37 @@ auto operator/(const double l, const Quantity<IL2>& rhs) -> decltype(Quantity<ty
     return Quantity<typename UnaryZip<IL2, Neg>::type>(newValue);
 }
 
+template<typename T>
+struct has_size {
+private:
+    // Версия метода detect, которая будет существовать для любого типа Т, переданного в has_size
+    static void detect(...);
+    // Версия метода detect, которая будет существовать только для типа Т, содержащего функцию "size" без параметров - "size()"
+    // Это достигается за счёт использования оператора decltype, который  определяет тип выражения, причём само выражение не вычисляется и в код не переводится.
+    // В качестве выражения для decltype используется вызов требуемого метода, с аргументами нужного типа. Тогда результатом decltype будет возвращаемый тип метода.
+    // Если метода с таким именем нет, или он принимает другие типы аргументов, то получится требуемая ошибка, которая позволит реализовать механизм SFINAE.
+    // ---
+    // Чтобы не требовать от типа U наличия конструктора по умолчанию, используется declval.
+    template<typename U> static decltype(std::declval<U>().size()) detect(const U&);
+public:
+    // Сравнивается тип size_t с типом, который возвращается одной из версий detect().
+    // Если при подстановке типа Т в метод detect произошёл выбор 2ой версии этого метода, то тип возвращаемого значения будет size_t и "is_same" вернёт true.
+    static constexpr bool value = std::is_same<size_t, decltype(detect(std::declval<T>()))>::value;
+};
+
+// Шаблонная функция get_size, которая принимает значение некоторого типа,
+// у которого есть либо константный метод size() возвращающий size_t, либо поле size типа size_t,
+// и возвращает соответствующее значение.
+template <typename T, class E = typename std::enable_if<has_size<T>::value, T>::type>
+auto get_size(const T& t) -> decltype(t.size()) {
+    return t.size();
+}
+template <typename T, class E = typename std::enable_if<!has_size<T>::value, T>::type>
+auto get_size(const T& t) -> decltype(t.size) {
+    return t.size;
+}
+
+
 int main()
 {
     // map_reduce_*
@@ -297,6 +329,14 @@ int main()
 
         FreqQ     f{ 25 };              // Частота = 25          (1/с = Герц)
         TimeQ     T = 1 / f;            // Период = 0.04 с
+    }
+    // SFINAE practice
+    {
+        std::string s{ "Hello" };
+        size_t s_size = get_size(s);   // 5, вызывается метод size()
+
+        SizeStruct x{ 10 };
+        size_t x_size = get_size(x);  // 10, читается поле size
     }
 }
 

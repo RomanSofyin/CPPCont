@@ -161,6 +161,7 @@
     <ClInclude Include="pch.h" />
     <ClInclude Include="MetaArith.h" />
     <ClInclude Include="Quantity.h" />
+    <ClInclude Include="SizeStruct.h" />
     <ClInclude Include="week5.h" />
     <ClInclude Include="Zip.h" />
   </ItemGroup>
