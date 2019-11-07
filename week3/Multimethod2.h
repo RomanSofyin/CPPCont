@@ -58,7 +58,7 @@ public:
 	// Commented out the line below some kind of which should probably be used to complete the task on stepik
 	//auto getImpl(Base* a, Base* b, bool c = Commutative) -> decltype(getImpl_RET_TYPE2) const
 	// may resume investigation of the issue with getImpl() from here - https://stackoverflow.com/questions/5973427/error-passing-xxx-as-this-argument-of-xxx-discards-qualifiers
-	auto getImpl(Base* a, Base* b, bool c = Commutative) const
+    auto getImpl(Base* a, Base* b, bool c = Commutative) const -> decltype(getImpl_RET_TYPE2)
 	{
 		auto it = mmap.find(
 			std::make_pair(
