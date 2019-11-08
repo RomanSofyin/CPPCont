@@ -20,5 +20,12 @@ bool is_intersect_t_t(Shape* a, Shape* b) {
 
 // Check if a rectangle and a triangle intersect
 bool is_intersect_r_t(Shape* a, Shape* b) {
-	return rand() % 4;
+    std::string aType = typeid(*a).name();
+    std::string bType = typeid(*b).name();
+    if (aType != "struct Rectangle" || bType != "struct Triangle") {
+        std::cout << "is_intersect_r_t gets called with wrong parms" << std::endl;
+        int zero = 0;
+        int asd = 4 / zero;
+    }
+    return rand() % 4;
 }
