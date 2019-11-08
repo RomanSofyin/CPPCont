@@ -413,7 +413,10 @@ int main()
 	// returning bool and commutative
 	Multimethod2<Shape, bool, true> is_intersect;
 	// add multimethod implementation for two rectangles
-	is_intersect.addImpl(typeid(Rectangle), typeid(Rectangle), is_intersect_r_r);
+    is_intersect.addImpl(typeid(Rectangle), typeid(Rectangle), is_intersect_r_r);
+    
+    is_intersect.addImpl(typeid(Triangle), typeid(Triangle), is_intersect_t_t);
+    
 	// add multimethod implementation for a rectangle and a triangle
 	is_intersect.addImpl(typeid(Rectangle), typeid(Triangle), is_intersect_r_t);
 	// create two shapes
@@ -437,7 +440,29 @@ int main()
 		// here the shapes are passed conversely;
 		// implementation must handle this case properly
 	}
-	/*
+    if (is_intersect.hasImpl(t1, t1))
+        bool res = is_intersect.call(t1, t1);
+    if (is_intersect.hasImpl(r1, r1))
+        bool res = is_intersect.call(r1, r1);
+    // all is quite the same as above but when Commutative=false
+    {
+        Multimethod2<Shape, bool, false> is_intersect;
+        is_intersect.addImpl(typeid(Rectangle), typeid(Rectangle), is_intersect_r_r);
+        is_intersect.addImpl(typeid(Triangle), typeid(Triangle), is_intersect_t_t);
+        is_intersect.addImpl(typeid(Rectangle), typeid(Triangle), is_intersect_r_t);
+        Shape* t1 = new Triangle();
+        Shape* r1 = new Rectangle();
+
+        if (is_intersect.hasImpl(t1, r1))
+            bool res = is_intersect.call(t1, r1);
+        if (is_intersect.hasImpl(r1, t1))
+            bool res = is_intersect.call(r1, t1);
+        if (is_intersect.hasImpl(t1, t1))
+            bool res = is_intersect.call(t1, t1);
+        if (is_intersect.hasImpl(r1, r1))
+            bool res = is_intersect.call(r1, r1);
+    }
+    /*
 	 * Multimethod2 task <<<<<<<
 	 */
 	
